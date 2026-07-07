@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tu Programa Personalizado · Carlos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap');
+
+:root{
+  --crema:        #FAF5EC;
+  --crema-2:      #F2E9D8;
+  --blanco:       #FFFDF9;
+  --terracota:    #B5654A;
+  --terracota-osc:#8F4A33;
+  --salvia:       #87977A;
+  --salvia-osc:   #5E6E52;
+  --gold:         #C2A14C;
+  --tinta:        #3E322A;
+  --tinta-suave:  #6F6055;
+  --linea:        #E3D7C4;
+
+  --font-display:'Cinzel', Georgia, 'Times New Roman', serif;
+  --font-serif:'Cormorant Garamond', Georgia, serif;
+  --font-sans:'Jost', 'Helvetica Neue', Arial, sans-serif;
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0; background:var(--crema); color:var(--tinta);
+  font-family:var(--font-sans); font-weight:400; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- MENÚ STICKY ---------- */
+.menu{
+  position:sticky; top:0; z-index:60;
+  background:rgba(250,245,236,.95);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--linea);
+}
+.menu-inner{
+  max-width:920px; margin:0 auto;
+  display:flex; align-items:center; gap:12px; padding:10px 16px;
+}
+.menu-indice{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--font-sans); font-weight:400; font-size:.86rem;
+  letter-spacing:.04em; color:var(--terracota-osc);
+  background:var(--blanco); border:1px solid var(--linea);
+  cursor:pointer; padding:8px 16px; border-radius:22px; transition:all .2s ease;
+}
+.menu-indice:hover{ border-color:var(--gold); background:var(--crema-2); }
+.menu-indice .caret{
+  display:inline-block; width:0; height:0;
+  border-left:4px solid transparent; border-right:4px solid transparent;
+  border-top:5px solid currentColor; transition:transform .25s ease;
+}
+.menu.open .menu-indice .caret{ transform:rotate(180deg); }
+.menu-marca{
+  flex:1; text-align:center; font-family:var(--font-display); letter-spacing:.06em;
+  font-size:.78rem; color:var(--tinta-suave); text-transform:uppercase;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.menu .imprimir{
+  flex:0 0 auto; font-family:var(--font-sans); font-weight:400; font-size:.82rem;
+  color:var(--terracota-osc); background:var(--blanco);
+  border:1px solid var(--linea); cursor:pointer;
+  padding:8px 16px; border-radius:22px; white-space:nowrap; transition:all .2s ease;
+}
+.menu .imprimir:hover{ background:var(--terracota); color:#fff; border-color:var(--terracota); }
+.indice-panel{
+  position:absolute; left:0; right:0; top:100%;
+  background:var(--blanco); border-bottom:1px solid var(--linea);
+  box-shadow:0 14px 30px rgba(62,50,42,.12);
+  max-height:72vh; overflow-y:auto;
+  padding:14px max(16px, calc((100% - 920px) / 2)); display:none;
+}
+.menu.open .indice-panel{ display:block; }
+.indice-grid{ max-width:920px; margin:0 auto; display:grid; grid-template-columns:repeat(2,1fr); gap:4px; }
+@media(max-width:600px){ .indice-grid{ grid-template-columns:1fr; } .menu-marca{ display:none; } }
+.indice-item{
+  display:flex; align-items:center; gap:12px; width:100%;
+  text-align:left; background:transparent; border:none; cursor:pointer;
+  padding:12px 14px; border-radius:9px;
+  font-family:var(--font-sans); font-weight:300; font-size:.98rem;
+  color:var(--tinta); transition:all .15s ease;
+}
+.indice-item:hover{ background:var(--crema-2); color:var(--terracota-osc); }
+.indice-item .dot{ flex:0 0 auto; width:6px; height:6px; border-radius:50%; background:var(--gold); }
+.indice-item.is-front .dot{ background:var(--linea); }
+
+/* ---------- SECCIONES ---------- */
+section{ padding:64px max(20px, calc((100% - 820px) / 2)); width:100%; scroll-margin-top:78px; }
+section.alt{ background:var(--crema-2); }
+
+/* ---------- PORTADA ---------- */
+.portada{ text-align:center; padding-top:78px; padding-bottom:70px;
+  background:radial-gradient(120% 90% at 50% 0%, #FCF8F0 0%, var(--crema) 60%); }
+.portada .marca{ font-family:var(--font-sans); font-weight:300; letter-spacing:.34em;
+  text-transform:uppercase; font-size:.72rem; color:var(--tinta-suave); margin-bottom:30px; }
+.portada .eyebrow{ font-family:var(--font-serif); font-style:italic; color:var(--terracota); font-size:1.2rem; margin-bottom:6px; }
+.portada h1{ font-family:var(--font-display); font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+  font-size:clamp(1.5rem, 4.5vw, 2.15rem); color:var(--tinta); line-height:1.25; margin:0 0 4px; }
+.portada .nombre{ font-family:var(--font-serif); font-weight:500; font-size:clamp(2.4rem, 9vw, 3.6rem);
+  color:var(--terracota-osc); line-height:1.05; margin:14px 0 20px; }
+.filete{ width:64px; height:2px; background:var(--gold); margin:22px auto; border:none; }
+.portada .subtitulo{ font-family:var(--font-serif); font-style:italic; font-size:1.3rem;
+  color:var(--tinta-suave); max-width:32ch; margin:0 auto; line-height:1.5; }
+.portada .fecha{ margin-top:30px; font-size:.78rem; letter-spacing:.16em; text-transform:uppercase; color:var(--tinta-suave); }
+
+/* ---------- CARTA ---------- */
+.carta{ background:var(--blanco); border:1px solid var(--linea); border-top:3px solid var(--gold);
+  border-radius:16px; box-shadow:0 10px 38px rgba(62,50,42,.07); padding:clamp(30px, 6vw, 58px); }
+.carta .encabezado-carta{ font-family:var(--font-display); letter-spacing:.16em; text-transform:uppercase;
+  font-size:.74rem; color:var(--gold); text-align:center; margin-bottom:26px; }
+.carta h2{ font-family:var(--font-serif); font-weight:600; font-style:italic; font-size:clamp(1.7rem, 5vw, 2.3rem);
+  color:var(--terracota-osc); text-align:center; margin:0 0 30px; }
+.carta p{ font-family:var(--font-serif); font-size:clamp(1.18rem, 2.6vw, 1.34rem); line-height:1.74; color:var(--tinta); margin:0 0 20px; }
+.carta p em{ font-style:italic; }
+.carta p .resalte{ font-weight:600; color:var(--terracota-osc); font-style:normal; }
+.carta .firma{ margin-top:34px; text-align:right; }
+.carta .firma .nombre-firma{ font-family:var(--font-serif); font-style:italic; font-weight:600; font-size:1.5rem; color:var(--terracota-osc); }
+.carta .firma .lema{ font-family:var(--font-serif); font-style:italic; color:var(--tinta-suave); font-size:1.1rem; margin-top:2px; }
+
+/* ---------- LECTURA PREVIA ---------- */
+.lectura-previa{ background:var(--blanco); border-left:6px solid var(--terracota); border-radius:12px;
+  padding:26px 28px; box-shadow:0 6px 24px rgba(62,50,42,.07); }
+.lectura-previa h2{ font-family:var(--font-display); color:var(--terracota-osc); letter-spacing:.05em;
+  font-size:1.18rem; text-transform:uppercase; margin:0 0 14px; }
+.lectura-previa p{ font-family:var(--font-sans); color:var(--tinta); line-height:1.7; margin:0 0 12px; }
+.lectura-previa .firma-mini{ font-family:var(--font-serif); font-style:italic; color:var(--tinta-suave); margin-top:6px; font-size:1.08rem; }
+
+/* ---------- TÍTULOS DE SECCIÓN ---------- */
+.seccion-titulo{ margin-bottom:30px; }
+.seccion-titulo .kicker{ font-family:var(--font-sans); font-weight:400; letter-spacing:.2em; text-transform:uppercase;
+  font-size:.72rem; color:var(--gold); margin-bottom:10px; }
+.seccion-titulo h2{ font-family:var(--font-display); font-weight:600; letter-spacing:.04em;
+  font-size:clamp(1.4rem, 4vw, 1.7rem); color:var(--terracota-osc); margin:0 0 8px; }
+.seccion-titulo .lead{ font-family:var(--font-serif); font-style:italic; font-size:1.22rem; color:var(--tinta-suave); margin:0; max-width:56ch; }
+
+/* ---------- MAPA ---------- */
+.mapa-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+@media(max-width:560px){ .mapa-grid{ grid-template-columns:1fr; } }
+.mapa-card{ background:var(--blanco); border:1px solid var(--linea); border-radius:14px; padding:20px 20px 18px;
+  text-align:left; cursor:pointer; transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  display:flex; gap:14px; align-items:flex-start; width:100%; }
+.mapa-card:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(62,50,42,.09); border-color:var(--gold); }
+.mapa-card .num{ font-family:var(--font-display); font-weight:600; color:var(--gold); font-size:1.15rem; line-height:1; flex:0 0 auto; margin-top:2px; }
+.mapa-card .txt h3{ font-family:var(--font-sans); font-weight:500; font-size:1.04rem; color:var(--terracota-osc); margin:0 0 4px; }
+.mapa-card .txt p{ font-family:var(--font-sans); font-weight:300; font-size:.92rem; color:var(--tinta-suave); margin:0; line-height:1.55; }
+.mapa-nota{ margin-top:20px; text-align:center; font-family:var(--font-serif); font-style:italic; color:var(--tinta-suave); font-size:1.1rem; }
+
+/* ---------- AVISO ---------- */
+.aviso{ background:var(--blanco); border:1px solid var(--linea); border-left:6px solid var(--salvia); border-radius:12px; padding:24px 26px; }
+.aviso h2{ font-family:var(--font-display); font-size:1.05rem; letter-spacing:.04em; text-transform:uppercase; color:var(--salvia-osc); margin:0 0 14px; }
+.aviso p{ font-family:var(--font-sans); font-size:.96rem; color:var(--tinta); line-height:1.7; margin:0 0 12px; }
+.aviso p:last-child{ margin-bottom:0; }
+.aviso strong{ color:var(--terracota-osc); }
+.aviso .sub{ font-family:var(--font-sans); font-weight:500; font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--salvia-osc); margin:18px 0 6px; }
+
+/* ---------- FOOTER ---------- */
+.footer{ text-align:center; padding:54px 20px 60px; border-top:1px solid var(--linea); background:var(--crema-2); }
+.footer .filete{ margin-bottom:20px; }
+.footer .marca-footer{ font-family:var(--font-display); letter-spacing:.06em; color:var(--terracota-osc); font-size:1rem; margin-bottom:6px; }
+.footer .lema-footer{ font-family:var(--font-serif); font-style:italic; color:var(--tinta-suave); font-size:1.12rem; margin-bottom:20px; }
+.footer .legal{ font-family:var(--font-sans); font-weight:300; font-size:.78rem; color:var(--tinta-suave); max-width:46ch; margin:0 auto; line-height:1.6; }
+
+.wip{ text-align:center; font-family:var(--font-serif); font-style:italic; font-size:1.05rem;
+  letter-spacing:.02em; color:var(--tinta-suave); padding:30px 20px 4px; }
+
+/* ---------- ACENTO POR BLOQUE ---------- */
+.bloque{ --acento:var(--gold); --acento-osc:#9C7D2E; }
+.bloque--calma{ --acento:var(--salvia); --acento-osc:var(--salvia-osc); }
+.bloque--entender{ --acento:var(--salvia); --acento-osc:var(--salvia-osc); }
+.bloque--fisico{ --acento:var(--terracota); --acento-osc:var(--terracota-osc); }
+.bloque--coaching{ --acento:var(--terracota); --acento-osc:var(--terracota-osc); }
+
+.seccion-titulo .barra{ width:46px; height:3px; border-radius:2px; background:var(--gold); margin-bottom:14px; }
+.bloque .seccion-titulo .barra{ background:var(--acento); }
+.bloque .seccion-titulo .kicker{ color:var(--acento-osc); }
+.bloque .seccion-titulo h2{ color:var(--acento-osc); }
+
+/* ---------- IDEAS (psicoeducación) ---------- */
+.ideas{ display:flex; flex-direction:column; gap:16px; }
+.idea{ background:var(--blanco); border:1px solid var(--linea); border-left:4px solid var(--acento, var(--salvia));
+  border-radius:14px; padding:24px 26px; box-shadow:0 6px 24px rgba(62,50,42,.05); }
+.idea h3{ font-family:var(--font-display); font-weight:600; font-size:1.04rem; letter-spacing:.02em; color:var(--acento-osc, var(--salvia-osc)); margin:0 0 10px; }
+.idea p{ font-family:var(--font-sans); font-weight:300; font-size:1rem; line-height:1.7; color:var(--tinta); margin:0; }
+
+/* ---------- INTRO DE BLOQUE ---------- */
+.intro-bloque{ font-family:var(--font-serif); font-size:1.2rem; line-height:1.7; color:var(--tinta); margin:0 0 28px; max-width:64ch; }
+
+/* ---------- SUB-APARTADO (extra dentro de un bloque) ---------- */
+.sub-titulo{ margin:38px 0 6px; padding-top:24px; border-top:1px dashed var(--acento, var(--gold));
+  font-family:var(--font-display); font-weight:600; font-size:1.12rem; letter-spacing:.03em;
+  color:var(--acento-osc, var(--terracota-osc)); display:flex; align-items:center; gap:10px; }
+.sub-titulo::before{ content:"+"; display:inline-flex; align-items:center; justify-content:center;
+  width:26px; height:26px; flex:0 0 auto; border-radius:50%; background:var(--acento, var(--gold)); color:#fff;
+  font-family:var(--font-sans); font-weight:400; font-size:1.1rem; line-height:1; }
+.sub-lead{ font-family:var(--font-serif); font-style:italic; font-size:1.16rem; line-height:1.6;
+  color:var(--tinta-suave); margin:0 0 18px; max-width:62ch; }
+
+/* ---------- LO QUE DESCARTO ---------- */
+.descarto{ background:var(--blanco); border:1px solid var(--linea); border-top:3px solid var(--tinta);
+  border-radius:14px; padding:24px 26px; box-shadow:0 6px 24px rgba(62,50,42,.05); margin-top:24px; }
+.descarto h3{ font-family:var(--font-display); font-weight:600; font-size:1.08rem; letter-spacing:.02em; color:var(--tinta); margin:0 0 6px; }
+.descarto .descarto-intro{ font-family:var(--font-serif); font-style:italic; font-size:1.12rem; color:var(--tinta-suave); margin:0 0 16px; }
+.descarto-item{ display:flex; gap:14px; align-items:flex-start; padding:15px 0; border-bottom:1px solid var(--linea); }
+.descarto-item:last-of-type{ border-bottom:none; padding-bottom:2px; }
+.descarto-item .marca{ flex:0 0 auto; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-sans); font-weight:500; font-size:.95rem; line-height:1; letter-spacing:.06em; }
+.descarto-item.pausa .marca{ background:rgba(196,161,76,.15); color:var(--gold); border:1.5px solid var(--gold); font-size:.8rem; }
+.descarto-item.firme .marca{ background:#2A2016; color:#fff; }
+.descarto-item .cont h4{ margin:0 0 3px; font-family:var(--font-sans); font-weight:500; font-size:1.03rem; color:var(--tinta); }
+.descarto-item .cont p{ margin:0; font-family:var(--font-sans); font-weight:300; font-size:.95rem; color:var(--tinta-suave); line-height:1.62; }
+.descarto-leyenda{ display:flex; flex-wrap:wrap; gap:18px; margin-top:16px; padding-top:14px; border-top:1px dashed var(--linea);
+  font-family:var(--font-sans); font-weight:300; font-size:.84rem; color:var(--tinta-suave); }
+.descarto-leyenda span{ display:inline-flex; align-items:center; gap:7px; }
+.descarto-leyenda .p{ display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%;
+  border:1.5px solid var(--gold); color:var(--gold); font-size:.62rem; font-weight:500; }
+.descarto-leyenda .f{ display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%;
+  background:#2A2016; color:#fff; font-size:.72rem; }
+
+/* ---------- PAUTA / CUADRO DE INTRODUCCIÓN ---------- */
+.pauta{ background:var(--crema-2); border:1px solid var(--linea); border-radius:14px; padding:22px 24px; margin:6px 0 24px; }
+.pauta h3{ font-family:var(--font-display); font-weight:600; font-size:1.02rem; letter-spacing:.03em; color:var(--terracota-osc); margin:0 0 14px; text-transform:uppercase; }
+.pauta-fila{ display:flex; gap:16px; align-items:baseline; padding:12px 0; border-bottom:1px solid var(--linea); }
+.pauta-fila:last-child{ border-bottom:none; padding-bottom:2px; }
+.pauta-fila .cuando{ flex:0 0 34%; max-width:180px; font-family:var(--font-sans); font-weight:500; font-size:.82rem;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--gold); }
+.pauta-fila .que{ flex:1; font-family:var(--font-sans); font-weight:300; font-size:1rem; color:var(--tinta); line-height:1.55; }
+.pauta-fila .que strong{ font-weight:500; color:var(--tinta); }
+@media(max-width:540px){ .pauta-fila{ flex-direction:column; gap:3px; } .pauta-fila .cuando{ max-width:none; } }
+
+/* ---------- LECTURAS / LIBRO ---------- */
+.libro{ background:var(--blanco); border:1px solid var(--linea); border-left:4px solid var(--acento, var(--gold));
+  border-radius:14px; padding:22px 26px; box-shadow:0 6px 24px rgba(62,50,42,.05); margin-bottom:16px; }
+.libro .libro-cab{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+.libro h3{ font-family:var(--font-serif); font-weight:600; font-style:italic; font-size:1.32rem; color:var(--acento-osc, var(--terracota-osc)); margin:0; line-height:1.2; }
+.libro .autor{ font-family:var(--font-sans); font-weight:300; font-size:.9rem; color:var(--tinta-suave); letter-spacing:.02em; }
+.libro .porque{ font-family:var(--font-sans); font-weight:300; font-size:1rem; line-height:1.72; color:var(--tinta); margin:0; }
+.libro .porque .et{ display:block; font-family:var(--font-sans); font-weight:500; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase; color:var(--tinta-suave); margin-bottom:6px; }
+
+/* ---------- SEMANA ---------- */
+.sem-dia{ background:var(--blanco); border:1px solid var(--linea); border-radius:14px; padding:18px 22px; margin-bottom:12px;
+  display:flex; gap:20px; align-items:flex-start; box-shadow:0 5px 20px rgba(62,50,42,.045); }
+.sem-dia .dia-nombre{ flex:0 0 108px; font-family:var(--font-sans); font-weight:500; font-size:.8rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--terracota-osc); padding-top:2px; }
+.sem-dia .dia-plan{ flex:1; font-family:var(--font-sans); font-weight:300; font-size:1rem; line-height:1.68; color:var(--tinta); }
+.sem-dia .dia-plan strong{ font-weight:500; color:var(--terracota-osc); }
+.sem-dia.finde{ background:var(--crema-2); }
+.sem-dia.finde .dia-nombre{ color:var(--salvia-osc); }
+@media(max-width:560px){ .sem-dia{ flex-direction:column; gap:6px; } .sem-dia .dia-nombre{ flex:none; } }
+
+.modo-minimo{ background:rgba(135,151,122,.12); border:1px solid var(--salvia); border-radius:14px; padding:22px 26px; margin-top:20px; }
+.modo-minimo h3{ font-family:var(--font-display); font-weight:600; font-size:1.05rem; letter-spacing:.02em; color:var(--salvia-osc); margin:0 0 8px; display:flex; align-items:center; gap:10px; }
+.modo-minimo h3::before{ content:""; width:22px; height:22px; flex:0 0 auto; border-radius:50%; border:2px solid var(--salvia); }
+.modo-minimo p{ font-family:var(--font-sans); font-weight:300; font-size:1rem; line-height:1.7; color:var(--tinta); margin:0; }
+.modo-minimo p strong{ font-weight:500; color:var(--salvia-osc); }
+
+/* ---------- DIARIO EMOCIONAL ---------- */
+.diario{ background:var(--blanco); border:1px solid var(--linea); border-radius:16px; padding:8px; box-shadow:0 8px 30px rgba(62,50,42,.06); }
+.diario-tabs{ display:flex; gap:4px; padding:8px; flex-wrap:wrap; }
+.diario-tab{ flex:1; min-width:140px; font-family:var(--font-sans); font-weight:400; font-size:.92rem; color:var(--tinta-suave);
+  background:var(--crema); border:1px solid var(--linea); border-radius:10px; padding:12px 10px; cursor:pointer; transition:all .18s ease; }
+.diario-tab:hover{ background:var(--crema-2); }
+.diario-tab.activa{ background:var(--terracota); color:#fff; border-color:var(--terracota); }
+.diario-panel{ padding:14px 18px 18px; display:none; }
+.diario-panel.activo{ display:block; }
+.diario-panel .guia{ font-family:var(--font-serif); font-style:italic; font-size:1.14rem; color:var(--tinta-suave); margin:0 0 14px; line-height:1.5; }
+.animo{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.animo button{ font-family:var(--font-sans); font-weight:300; font-size:.86rem; color:var(--tinta); background:var(--crema);
+  border:1px solid var(--linea); border-radius:20px; padding:7px 15px; cursor:pointer; transition:all .15s ease; }
+.animo button:hover{ border-color:var(--gold); }
+.animo button.sel{ background:var(--salvia); color:#fff; border-color:var(--salvia); }
+.campo{ width:100%; box-sizing:border-box; font-family:var(--font-sans); font-weight:300; font-size:1rem; color:var(--tinta);
+  background:var(--crema); border:1px solid var(--linea); border-radius:10px; padding:14px; min-height:120px; resize:vertical; line-height:1.6; }
+.campo:focus{ outline:none; border-color:var(--gold); background:var(--blanco); }
+.diario-acciones{ display:flex; align-items:center; gap:12px; margin-top:12px; flex-wrap:wrap; }
+.btn-guardar{ font-family:var(--font-sans); font-weight:400; font-size:.92rem; color:#fff; background:var(--terracota-osc);
+  border:none; border-radius:22px; padding:11px 22px; cursor:pointer; transition:all .18s ease; }
+.btn-guardar:hover{ background:var(--terracota); }
+.guardado-ok{ font-family:var(--font-sans); font-size:.86rem; color:var(--salvia-osc); opacity:0; transition:opacity .3s ease; }
+.guardado-ok.ver{ opacity:1; }
+.entradas{ margin-top:20px; }
+.entradas h4{ font-family:var(--font-sans); font-weight:500; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--tinta-suave); margin:0 0 10px; }
+.entrada{ background:var(--crema); border-left:3px solid var(--gold); border-radius:8px; padding:12px 15px; margin-bottom:10px; }
+.entrada .fecha-e{ font-family:var(--font-sans); font-weight:500; font-size:.76rem; letter-spacing:.06em; text-transform:uppercase; color:var(--gold); margin-bottom:5px; }
+.entrada .animo-e{ font-family:var(--font-sans); font-weight:400; font-size:.82rem; color:var(--salvia-osc); margin-bottom:4px; }
+.entrada .texto-e{ font-family:var(--font-sans); font-weight:300; font-size:.98rem; color:var(--tinta); line-height:1.6; white-space:pre-wrap; }
+.entrada .borrar-e{ float:right; background:none; border:none; color:var(--tinta-suave); cursor:pointer; font-size:.8rem; text-decoration:underline; }
+.diario-vacio{ font-family:var(--font-serif); font-style:italic; color:var(--tinta-suave); font-size:1.02rem; }
+
+/* ---------- CÓMO VOY (autoevaluación) ---------- */
+.evaluacion{ background:var(--blanco); border:1px solid var(--linea); border-radius:16px; padding:26px 28px; box-shadow:0 8px 30px rgba(62,50,42,.06); }
+.slider-fila{ margin-bottom:22px; }
+.slider-fila .slider-cab{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
+.slider-fila label{ font-family:var(--font-sans); font-weight:400; font-size:1.02rem; color:var(--tinta); }
+.slider-fila .valor{ font-family:var(--font-display); font-weight:600; font-size:1.2rem; color:var(--terracota-osc); min-width:28px; text-align:right; }
+.slider-fila input[type=range]{ -webkit-appearance:none; appearance:none; width:100%; height:6px; border-radius:6px;
+  background:linear-gradient(to right, var(--salvia) 0%, var(--salvia) 50%, var(--linea) 50%, var(--linea) 100%); outline:none; }
+.slider-fila input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:22px; height:22px; border-radius:50%;
+  background:var(--crema); border:2px solid var(--salvia-osc); cursor:pointer; box-shadow:0 2px 6px rgba(62,50,42,.2); }
+.slider-fila input[type=range]::-moz-range-thumb{ width:22px; height:22px; border-radius:50%; background:var(--crema);
+  border:2px solid var(--salvia-osc); cursor:pointer; }
+.eval-resultado{ margin-top:8px; padding:20px 22px; background:var(--crema-2); border-radius:12px; text-align:center; }
+.eval-resultado .promedio-num{ font-family:var(--font-display); font-weight:600; font-size:2rem; color:var(--terracota-osc); line-height:1; }
+.eval-resultado .promedio-lab{ font-family:var(--font-sans); font-weight:400; font-size:.74rem; letter-spacing:.14em; text-transform:uppercase; color:var(--tinta-suave); margin-top:4px; }
+.eval-resultado .promedio-msg{ font-family:var(--font-serif); font-style:italic; font-size:1.16rem; color:var(--tinta); margin-top:12px; line-height:1.5; }
+.eval-acciones{ display:flex; align-items:center; gap:12px; margin-top:18px; flex-wrap:wrap; justify-content:center; }
+.eval-historial{ margin-top:22px; }
+.eval-historial h4{ font-family:var(--font-sans); font-weight:500; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--tinta-suave); margin:0 0 10px; }
+.hist-fila{ display:flex; justify-content:space-between; align-items:center; gap:12px; background:var(--crema); border-left:3px solid var(--gold);
+  border-radius:8px; padding:10px 14px; margin-bottom:8px; font-family:var(--font-sans); font-weight:300; font-size:.95rem; color:var(--tinta); }
+.hist-fila .hist-fecha{ font-weight:500; font-size:.8rem; letter-spacing:.05em; text-transform:uppercase; color:var(--gold); }
+.hist-fila .hist-media{ font-family:var(--font-display); font-weight:600; color:var(--terracota-osc); }
+.hist-fila .borrar-h{ background:none; border:none; color:var(--tinta-suave); cursor:pointer; font-size:.78rem; text-decoration:underline; }
+
+/* ---------- FICHA ---------- */
+.ficha{ background:var(--blanco); border:1px solid var(--linea); border-left:4px solid var(--acento, var(--gold));
+  border-radius:14px; padding:24px 26px; box-shadow:0 6px 24px rgba(62,50,42,.05); margin-bottom:16px; }
+.ficha h3{ font-family:var(--font-sans); font-weight:500; font-size:1.14rem; color:var(--acento-osc, var(--terracota-osc)); margin:0 0 9px; }
+.ficha .para-que{ font-family:var(--font-serif); font-style:italic; font-size:1.16rem; line-height:1.55; color:var(--tinta-suave); margin:0 0 15px; }
+.ficha .como{ font-family:var(--font-sans); font-weight:300; font-size:1rem; line-height:1.74; color:var(--tinta); margin:0 0 15px; }
+.ficha .como .et, .ficha .precaucion .et{ display:block; font-family:var(--font-sans); font-weight:500;
+  font-size:.72rem; letter-spacing:.15em; text-transform:uppercase; color:var(--tinta-suave); margin-bottom:6px; }
+.badge{ display:inline-block; font-family:var(--font-sans); font-weight:400; font-size:.8rem; color:var(--terracota-osc);
+  background:var(--crema-2); border:1px solid var(--gold); border-radius:20px; padding:5px 15px; }
+.ficha .precaucion{ margin-top:15px; background:rgba(135,151,122,.1); border-left:3px solid var(--salvia); border-radius:8px;
+  padding:12px 15px; font-family:var(--font-sans); font-weight:300; font-size:.93rem; color:var(--tinta); line-height:1.62; }
+.ficha .precaucion .et{ color:var(--salvia-osc); }
+
+/* ---------- NOTA DE KIKO ---------- */
+.nota-kiko{ margin-top:15px; background:var(--crema-2); border-radius:10px; padding:15px 20px;
+  font-family:var(--font-serif); font-style:italic; font-size:1.1rem; line-height:1.55; color:var(--tinta); }
+.nota-kiko .quien{ display:block; font-style:normal; font-family:var(--font-sans); font-weight:400; font-size:.72rem;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--tinta-suave); margin-top:9px; }
+
+/* ---------- APOYO PROFESIONAL ---------- */
+.apoyo-pro{ margin-top:22px; background:var(--blanco); border:1px dashed var(--gold); border-radius:12px;
+  padding:20px 24px; font-family:var(--font-sans); font-weight:300; font-size:.99rem; line-height:1.72; color:var(--tinta); }
+.apoyo-pro strong{ color:var(--terracota-osc); font-weight:500; }
+
+/* ---------- IMPRESIÓN ---------- */
+@media print{
+  .menu, .wip{ display:none !important; }
+  html{ scroll-behavior:auto; }
+  body{ background:#fff; }
+  section{ padding:30px 24px; page-break-inside:auto; }
+  .carta, .lectura-previa, .aviso, .mapa-card, .ficha, .idea, .nota-kiko, .apoyo-pro{ box-shadow:none !important; break-inside:avoid; }
+  .portada{ background:#fff; }
+  .diario-tabs, .animo, .diario-acciones, .borrar-e{ display:none !important; }
+  .diario-panel{ display:block !important; break-inside:avoid; }
+  .campo{ display:none !important; }
+  .entrada{ box-shadow:none !important; }
+  .eval-acciones, .borrar-h{ display:none !important; }
+  .evaluacion, .hist-fila{ box-shadow:none !important; break-inside:avoid; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== MENÚ ===== -->
+<nav class="menu" id="menu">
+  <div class="menu-inner">
+    <button class="menu-indice" onclick="toggleIndice(event)" aria-expanded="false" aria-controls="indicePanel">
+      <span class="caret"></span> Índice
+    </button>
+    <div class="menu-marca">Programa de Carlos</div>
+    <button class="imprimir" onclick="window.print()">Guardar en PDF</button>
+  </div>
+  <div class="indice-panel" id="indicePanel">
+    <div class="indice-grid">
+      <button class="indice-item is-front" onclick="irA('bienvenida')"><span class="dot"></span> Bienvenida</button>
+      <button class="indice-item is-front" onclick="irA('antes')"><span class="dot"></span> Antes de empezar</button>
+      <button class="indice-item is-front" onclick="irA('mapa')"><span class="dot"></span> El mapa del programa</button>
+      <button class="indice-item is-front" onclick="irA('aviso')"><span class="dot"></span> Aviso importante</button>
+      <button class="indice-item" onclick="irA('entender')"><span class="dot"></span> Entender lo que te pasa</button>
+      <button class="indice-item" onclick="irA('paces')"><span class="dot"></span> Hacer las paces contigo</button>
+      <button class="indice-item" onclick="irA('mente')"><span class="dot"></span> Reentrena tu mente</button>
+      <button class="indice-item" onclick="irA('calma')"><span class="dot"></span> Tus anclas de calma</button>
+      <button class="indice-item" onclick="irA('digito')"><span class="dot"></span> Digitopuntura: tus puntos de calma</button>
+      <button class="indice-item" onclick="irA('egoscue')"><span class="dot"></span> Método Egoscue</button>
+      <button class="indice-item" onclick="irA('espalda')"><span class="dot"></span> Tu espalda en el día a día</button>
+      <button class="indice-item" onclick="irA('estiramientos')"><span class="dot"></span> Estiramientos suaves</button>
+      <button class="indice-item" onclick="irA('yoga')"><span class="dot"></span> Yoga restaurativo</button>
+      <button class="indice-item" onclick="irA('fuerza')"><span class="dot"></span> Fuerza segura y propiocepción</button>
+      <button class="indice-item" onclick="irA('descanso')"><span class="dot"></span> Descanso profundo</button>
+      <button class="indice-item" onclick="irA('suplementacion')"><span class="dot"></span> Suplementación y fitoterapia</button>
+      <button class="indice-item" onclick="irA('gestos')"><span class="dot"></span> Pequeños gestos diarios</button>
+      <button class="indice-item" onclick="irA('mesa')"><span class="dot"></span> Tu mesa</button>
+      <button class="indice-item" onclick="irA('lecturas')"><span class="dot"></span> Lecturas recomendadas</button>
+      <button class="indice-item" onclick="irA('semana')"><span class="dot"></span> Tu semana</button>
+      <button class="indice-item" onclick="irA('diario')"><span class="dot"></span> Tu diario</button>
+      <button class="indice-item" onclick="irA('comovoy')"><span class="dot"></span> Cómo voy</button>
+      <button class="indice-item is-front" onclick="irA('cierre')"><span class="dot"></span> Una última carta</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== PORTADA ===== -->
+<section class="portada" id="inicio">
+  <div class="marca">Kiko Martínez · Terapeuta Natural</div>
+  <div class="eyebrow">Tu Programa Personalizado</div>
+  <h1>Movimiento · Calma · Amabilidad</h1>
+  <div class="nombre">Para Carlos</div>
+  <hr class="filete">
+  <p class="subtitulo">Volver a moverte sin miedo, bajar el ruido de dentro y aprender a tratarte con el cariño que mereces.</p>
+  <div class="fecha">6 de julio de 2026</div>
+</section>
+
+<!-- ===== CARTA DE BIENVENIDA ===== -->
+<section id="bienvenida">
+  <div class="carta">
+    <div class="encabezado-carta">Una carta para ti, antes de nada</div>
+    <h2>Para ti, Carlos</h2>
+
+    <p>Antes de hablarte de ejercicios, de plantas o de respiraciones, quiero pararme un momento en ti. Cuando leí tus respuestas no me puse a diseñar un programa: me puse a escucharte, despacio. Y quiero empezar dándote las gracias, porque escribir con la sinceridad con la que tú escribiste —sin adornarlo, diciendo hasta lo que duele— tiene muchísimo mérito. Hace falta valentía para contarse así de verdad, y tú la has tenido. Gracias por confiármelo.</p>
+
+    <p>Déjame decirte lo que vi, con el cuidado con que se cuenta algo importante.</p>
+
+    <p>Vi, lo primero, a alguien que <em>ama moverse</em>. Me lo dijiste con una frase en la que me quedé un rato: el deporte, además de aliviarte, te da <em>«mucha felicidad»</em>. Eso no es poca cosa, Carlos — es una brújula. Me señala por dónde entra la vida en ti. Y vi también la otra cara: un cuerpo que, justo cuando coges impulso, te frena con una lesión; y una espalda —esa L4-L5 que tanto te preocupa— que se ha convertido en un muro entre tú y lo que más bien te hace. Entiendo la rabia y la frustración de eso. No es pereza ni falta de ganas: es que te han parado una y otra vez en el momento de arrancar. Y quedarse con las ganas, cuando el movimiento es tu forma de ser feliz, cansa el alma.</p>
+
+    <p>Y sé que cargas con algo más grande, algo que no elegiste y que pesa más cuando se hace de noche: la enfermedad con la que convives, esa condición crónica que llevas en el cuerpo, y la incertidumbre sobre lo que traerán los años. Me lo dijiste sin rodeos, y no voy a hacer como que no está — sería faltarte al respeto. Vivir cada día con algo así, sabiendo lo que puede venir, y aun así levantarte y querer cuidarte y moverte, no es debilidad: es una de las formas más calladas y más grandes de valentía que existen. Quiero que sepas que lo veo.</p>
+
+    <p>No te voy a prometer que el miedo al futuro se borra con una respiración; eso sería mentirte. Pero sí quiero decirte algo con toda la honestidad, que es la única forma de cuidar de verdad: el futuro no se vive de golpe, se vive un día detrás de otro. Y aunque hay una parte de tu salud que no depende de ti —de esa se ocupan tus médicos, y en eso te apoyaremos siempre—, hay otra parte enorme que <em>sí</em> está en tus manos: cómo mueves tu cuerpo, cómo lo alimentas, cómo lo descansas y, sobre todo, cómo te tratas por dentro. Ahí es donde vamos a trabajar tú y yo. Tú mismo escribiste la frase más valiente de todo tu cuestionario: quieres que los años que te queden puedas vivirlos <em>de forma estable</em>. Pues eso, exactamente eso, es lo que vamos a construir juntos. No una vida perfecta: una vida estable, cuidada y tuya, viviendo <em>con</em> tu enfermedad sin que ella te viva a ti.</p>
+
+    <p>Pero hay algo que quiero nombrar por encima de todo lo demás, porque para mí es el centro de todo. Me escribiste que no te perdonas, que te hablas mal, que casi dirías que no te quieres. Y que te ves como <em>«el patito feo»</em>. Leí esa parte dos veces, y quiero responderte con la misma verdad con la que tú me hablaste: <span class="resalte">esa voz que te trata tan mal no dice la verdad sobre ti. Dice la verdad sobre lo cansado y lo solo que has estado.</span> Piénsalo un segundo: a nadie a quien quisieras le hablarías como te hablas a ti. A nadie le negarías el perdón que a ti te niegas. Esa dureza no naciste con ella — la aprendiste en algún momento, seguramente cuidando de todo y de todos menos de ti. Y lo que se aprende, se puede desaprender. No de un día para otro, pero se puede. Y no lo vas a hacer solo.</p>
+
+    <p>Me dices que te sientes muy mayor y que tu propio cuerpo te genera malestar. Vamos a cambiar eso despacio: que tu cuerpo deje de ser el sitio del dolor y del reproche y vuelva a ser el sitio de esa felicidad que tú mismo sabes que el movimiento te regala. Y sobre la soledad —que sé que aprieta, viviendo solo y con pocos apoyos cerca— quiero ser claro contigo: en este camino no estás solo. Yo estoy a este lado, y voy a seguir estando.</p>
+
+    <p>Sé además que ya lo intentaste antes, y que la terapia que probaste no te sirvió. No leo eso como que no haya ayuda para ti — leo que aquel encaje concreto no era el tuyo, y eso ocurre más de lo que crees. Buscar a la persona adecuada no es repetir lo que falló: es no rendirse. Y mientras tanto, este programa te sostiene y te acompaña cada día.</p>
+
+    <p>Me confesaste un miedo muy honesto: aburrirte o flojear en el plan. Lo he tenido presente en cada página. Por eso esto no es una lista larga y pesada de tareas: es variado, es breve, va cambiando, y está pensado para caber en tus treinta o cuarenta minutos sin que se te haga cuesta arriba. No hace falta que lo hagas perfecto. No hace falta que lo hagas todo. Solo que empieces, y que el día que falles —porque fallarás alguno, como todos— vuelvas sin castigarte. <span class="resalte">Volver, y no el látigo, es lo que cura.</span></p>
+
+    <p>Vamos a hacerlo juntos, a tu ritmo, sin prisa y sin exigencias que te pesen más de lo que ya cargas. Vamos a devolverle movimiento a tu cuerpo con cabeza, calma a tu mente y —lo más importante de todo— un poco de ternura al modo en que te tratas. Porque te lo mereces, Carlos. Aunque ahora mismo no te lo creas del todo, te lo mereces.</p>
+
+    <p>Bienvenido. Empezamos, y empezamos por cuidarte bien.</p>
+
+    <div class="firma">
+      <div class="nombre-firma">— Kiko</div>
+      <div class="lema">Tu bienestar, mi máxima prioridad.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LECTURA PREVIA ===== -->
+<section class="alt" id="antes">
+  <div class="lectura-previa">
+    <h2>Antes de empezar</h2>
+    <p>Tómate un momento y léelo entero, con calma, de principio a fin. No corras a hacer ejercicios sueltos: este programa no es una lista de tareas, es un mapa para que entiendas qué necesita tu cuerpo ahora y por qué cada cosa está donde está.</p>
+    <p>Cuando lo hayas leído y lo sientas tuyo, vuelve al calendario del final y empieza poco a poco, por lo que más te apetezca ese día. Leerlo primero, sin prisa, es la mejor forma de aprovecharlo — y también la mejor forma de que no se te haga cuesta arriba.</p>
+    <p class="firma-mini">No son deberes. Es cuidarte con cabeza. — Kiko</p>
+  </div>
+</section>
+
+<!-- ===== MAPA ===== -->
+<section id="mapa">
+  <div class="seccion-titulo">
+    <div class="kicker">Una mirada al conjunto</div>
+    <h2>El mapa de tu programa</h2>
+    <p class="lead">Para que veas el camino entero antes de pisarlo. Todo parte de una idea sencilla: primero calmar el motor y hacer las paces contigo; desde ahí, el movimiento vuelve solo, y sin miedo.</p>
+  </div>
+
+  <div class="mapa-grid">
+    <button class="mapa-card" onclick="irA('entender')">
+      <span class="num">01</span>
+      <span class="txt"><h3>Entender lo que te pasa</h3><p>Por qué tu cuerpo, tu espalda y tu descanso responden así — y por qué se puede mejorar.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('paces')">
+      <span class="num">02</span>
+      <span class="txt"><h3>Hacer las paces contigo</h3><p>El corazón del programa: aprender a hablarte bien y a perdonarte, poco a poco.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('mente')">
+      <span class="num">03</span>
+      <span class="txt"><h3>Reentrena tu mente</h3><p>Herramientas para creer más en ti, dar la vuelta al «no valgo» y ganar constancia.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('calma')">
+      <span class="num">04</span>
+      <span class="txt"><h3>Tus anclas de calma</h3><p>Bajar las revoluciones del motor en un minuto, incluso en mitad de un día difícil.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('digito')">
+      <span class="num">05</span>
+      <span class="txt"><h3>Digitopuntura: tus puntos de calma</h3><p>Unos puntos de presión suave para soltar el nervio y ayudarte a dormir.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('egoscue')">
+      <span class="num">06</span>
+      <span class="txt"><h3>Método Egoscue</h3><p>Una secuencia suave en el suelo para recolocar tu pelvis y descargar tu espalda.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('espalda')">
+      <span class="num">07</span>
+      <span class="txt"><h3>Tu espalda en el día a día</h3><p>Los gestos cotidianos —sentarte, agacharte, salir del coche— que la cuidan de verdad.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('estiramientos')">
+      <span class="num">08</span>
+      <span class="txt"><h3>Estiramientos suaves</h3><p>Soltar lo que te carga, sin tirones ni riesgos — y un extra de cuidado para tus manos.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('yoga')">
+      <span class="num">09</span>
+      <span class="txt"><h3>Yoga restaurativo</h3><p>Descansar de verdad: posturas sostenidas con apoyos para soltar cuerpo y mente.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('fuerza')">
+      <span class="num">10</span>
+      <span class="txt"><h3>Fuerza segura y propiocepción</h3><p>Recuperar tono y equilibrio sin riesgo, a tu ritmo — y el paseo como gran aliado.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('descanso')">
+      <span class="num">11</span>
+      <span class="txt"><h3>Descanso profundo</h3><p>Recuperar tu sueño con Yoga Nidra y hábitos que le devuelvan la calma a tus noches.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('suplementacion')">
+      <span class="num">12</span>
+      <span class="txt"><h3>Suplementación y fitoterapia</h3><p>Lo que te conviene y lo que descarto por ti, siempre a salvo con tu medicación.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('gestos')">
+      <span class="num">13</span>
+      <span class="txt"><h3>Pequeños gestos diarios</h3><p>Hábitos sencillos que, repetidos, cambian tu día: agua, luz, compañía y movimiento.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('mesa')">
+      <span class="num">14</span>
+      <span class="txt"><h3>Tu mesa</h3><p>Pequeños apoyos para tu energía y tu digestión, respetando lo que ya haces bien.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('lecturas')">
+      <span class="num">15</span>
+      <span class="txt"><h3>Lecturas recomendadas</h3><p>Cinco libros elegidos para ti, para acompañarte en lo que estás trabajando.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('semana')">
+      <span class="num">16</span>
+      <span class="txt"><h3>Tu semana</h3><p>Una guía flexible de lunes a domingo para repartir todo sin agobios.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('diario')">
+      <span class="num">17</span>
+      <span class="txt"><h3>Tu diario</h3><p>Un espacio propio para escribirte, hablarte bien y ver todo lo que sí avanzas.</p></span>
+    </button>
+    <button class="mapa-card" onclick="irA('comovoy')">
+      <span class="num">18</span>
+      <span class="txt"><h3>Cómo voy</h3><p>Una brújula para ver, sin nota y sin juicio, el camino que vas haciendo.</p></span>
+    </button>
+  </div>
+
+  <p class="mapa-nota">Este es el mapa de tu camino. Recórrelo a tu ritmo, sin prisa — yo te acompaño en cada paso.</p>
+</section>
+
+<!-- ===== AVISO ===== -->
+<section class="alt" id="aviso">
+  <div class="aviso">
+    <h2>Un apunte importante, con cariño</h2>
+    <p>Este programa es un <strong>acompañamiento complementario</strong> a nuestro trabajo en consulta. <strong>No es información médica ni un diagnóstico, y no sustituye la valoración ni el tratamiento de ningún profesional sanitario.</strong> Cualquier decisión sobre tu salud —tu enfermedad, tu medicación, tu espalda o tu descanso— corresponde siempre a tu médico y a los especialistas que te llevan.</p>
+
+    <p class="sub">Tu corazón, lo primero</p>
+    <p>Por tu enfermedad y por los antecedentes de tu familia, quiero pedirte algo con firmeza y con cariño: antes de subir la intensidad del ejercicio, <strong>coméntalo con tu médico y déjate revisar el corazón</strong> si no lo has hecho hace poco. Todo lo físico de este programa está pensado en intensidad suave-moderada precisamente por eso — para cuidarte mientras te mueves.</p>
+
+    <p class="sub">Tu descanso merece que lo miren</p>
+    <p>Me contaste que roncas y que te han dicho que haces <strong>pausas al respirar mientras duermes</strong>. Junto con levantarte siempre cansado, eso conviene comentarlo con tu médico para <strong>descartar una apnea del sueño</strong> — algo bastante frecuente y, esto es lo importante, muy tratable. Te lo digo sin ninguna alarma: al revés, con esperanza. Si resultara que ahí hay una parte de tu cansancio, tendría solución, y eso podría cambiarte el descanso —y con él, el ánimo y las fuerzas— más de lo que imaginas. Por eso merece la pena mirarlo con calma.</p>
+
+    <p class="sub">Y algo que te digo de corazón</p>
+    <p>Parte de lo que cargas —la dureza con la que te tratas, la soledad, el miedo al futuro y esos pensamientos que a veces te rondan y te inquietan— merece también un <strong>espacio acompañado por un profesional de la salud mental</strong>. Que la terapia anterior no te sirviera no significa que no haya ayuda para ti: significa que aquel encaje no era el tuyo. Buscar a la persona adecuada es un acto de valentía y de cuidado, no una recaída. Yo te acompaño desde aquí, hombro con hombro, en todo lo que esté en mi mano — y esto camina mejor de la mano de ese apoyo.</p>
+
+    <p>Y por último, lo esencial en lo físico: <strong>si algo te duele más de la cuenta, para</strong>. El dolor avisa, no castiga. Tú eres quien mejor te conoce.</p>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 1 · ENTENDER ===== -->
+<section class="bloque bloque--entender" id="entender">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">El porqué de todo</div>
+    <h2>Entender lo que te pasa</h2>
+    <p class="lead">Antes de hacer nada, una brújula. Cuando entiendes por qué tu cuerpo responde así, dejas de pelearte con él — y entender, en sí mismo, ya es el primer alivio.</p>
+  </div>
+
+  <div class="ideas">
+    <div class="idea">
+      <h3>Tu motor lleva demasiado tiempo en ralentí</h3>
+      <p>Tú sabes de motores. Imagina un coche con el motor encendido toda la noche, en el aparcamiento, sin moverse: gasta, se calienta, se desgasta — aunque no vaya a ningún sitio. Tu sistema nervioso lleva así mucho tiempo: en alerta, revolucionado, sin poder apagarse. Por eso puntúas tu capacidad de desconectar en un 1, por eso la cabeza no para y el sueño no llega. No es un defecto tuyo: es un motor fiel que se quedó encendido cuidándote. Casi todo lo que haremos apunta a lo mismo: enseñarle, poco a poco, que ya puede bajar las revoluciones y descansar.</p>
+    </div>
+    <div class="idea">
+      <h3>Tu espalda no está rota: está protegiéndose</h3>
+      <p>Lo de la L4-L5 te da miedo, y es normal. Pero quiero que sepas una cosa que cambia mucho las cosas: un disco que abomba o protruye <em>no</em> es una espalda rota, y dolor no siempre significa daño nuevo. Muchas veces es un cuerpo que, de tanto pararse por precaución, se ha vuelto rígido y desentrenado, y eso duele más. La buena noticia es que la espalda mejora justo con lo contrario de lo que el miedo te pide: no con reposo total, sino con el movimiento adecuado —descomprimir, activar el centro, moverse con cabeza—. Vamos a devolverte la confianza en tu espalda, paso a paso y sin sustos.</p>
+    </div>
+    <div class="idea">
+      <h3>Moverte con cabeza te cuida; no te desgasta</h3>
+      <p>Conviviendo con una enfermedad como la tuya es muy natural temer que entrenar «gaste» tu cuerpo más rápido. Es una duda sensata y honesta, y por eso quiero ser claro contigo: el movimiento <em>suave y moderado</em>, bien dosificado y sin llegar nunca al agotamiento, no acelera nada — al contrario, es de las mejores herramientas que tienes para conservar tu fuerza, tu ánimo y tu autonomía el mayor tiempo posible. La clave está en la dosis: ni pasarte ni pararte, ni el sofá ni el todo o nada. Ese punto medio, cuidado y constante, adaptado siempre a tu día y a cómo te encuentres, es exactamente donde vamos a trabajar. Por eso te pido también lo del corazón: no para asustarte, sino para poder movernos tranquilos y con red.</p>
+    </div>
+    <div class="idea">
+      <h3>Dormir no es un lujo: es tu tratamiento de fondo</h3>
+      <p>Duermes cinco o seis horas y las valoras con un 1. Eso no es un problema aparte: es lo que sostiene el resto. Cuando no descansas, todo aprieta más — el dolor, la ansiedad, la voz que se maltrata, las ganas de nada. Recuperar el descanso es, para ti, de lo más terapéutico que existe. Por eso le vamos a dar un lugar importante, con calma y con herramientas concretas. Y por eso, en paralelo, te animo a dejar que miren esas pausas al respirar de las que hablábamos en el aviso: puede que una parte de tu descanso no dependa solo de la calma, sino de una ayuda médica sencilla que, si hace falta, puede cambiarte el día a día.</p>
+    </div>
+  </div>
+
+  <div class="nota-kiko">
+    Entender no borra el síntoma de golpe, pero le quita el miedo. Y al dolor —y a la enfermedad— cuando les quitas el miedo, les quitas la mitad de su fuerza.
+    <span class="quien">Kiko</span>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 2 · HACER LAS PACES CONTIGO ===== -->
+<section class="bloque bloque--coaching alt" id="paces">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">El corazón del programa</div>
+    <h2>Hacer las paces contigo</h2>
+    <p class="lead">Aquí no hay nada que hacer «bien». Solo empezar a tratarte con la amabilidad que llevas tiempo negándote. Es lo más importante de todo el programa, y también lo más valiente.</p>
+  </div>
+
+  <p class="intro-bloque">Recuerda lo que te decía en la carta: esa voz dura que llevas dentro no dice la verdad sobre ti, dice lo cansado y lo solo que has estado. No vamos a pelearnos con ella de golpe. Vamos a irle quitando fuerza con gestos pequeños y sostenidos. No hace falta hacer todas estas herramientas, ni hacerlas seguidas: prueba la que hoy te llame y deja que el resto esperen. Y algo importante: esto acompaña, pero no sustituye, el apoyo profesional del que hablábamos — caminan mejor juntos.</p>
+
+  <div class="ficha">
+    <h3>Háblate como le hablarías a un amigo</h3>
+    <p class="para-que">Cambiar, poco a poco, la voz que te maltrata por una que te acompaña.</p>
+    <div class="como"><span class="et">Cómo se hace</span>La próxima vez que te pilles diciéndote algo duro —«soy un desastre», «el patito feo», «no valgo»—, para un segundo y hazte una pregunta sencilla: «¿le diría esto, con estas palabras, a un amigo al que quiero que estuviera pasando por lo mismo?». Casi siempre la respuesta es no. Entonces prueba a decírtelo como se lo dirías a él: con más verdad y menos castigo. No se trata de mentirte ni de fingir que todo va bien; se trata de dejar de ser tu peor enemigo.</div>
+    <p class="meta"><span class="badge">1 min · cada vez que aparezca</span></p>
+    <div class="nota-kiko">Trátate como tratarías a alguien a quien quieres. Tú también estás en esa lista, aunque lleves tiempo tachándote.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>La carta del perdón</h3>
+    <p class="para-que">Empezar a soltar ese «no me perdono» que tú mismo señalaste como una de tus cargas más pesadas.</p>
+    <div class="como"><span class="et">Cómo se hace</span>A solas y sin prisa, escríbete una carta a ti mismo. No a otra persona: a ti. Cuéntate qué es eso que no te perdonas, sin adornarlo. Y luego, desde la parte más adulta y serena de ti, respóndete como le responderías a alguien que ha sufrido y que hizo lo que pudo con lo que tenía. No hace falta que te lo creas entero el primer día. El perdón, muchas veces, empieza siendo una decisión antes que un sentimiento. Guarda la carta, o rómpela como gesto de soltar. Lo que cura es escribirla.</div>
+    <p class="meta"><span class="badge">20–30 min · una vez, y repítela cuando lo necesites</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Si al escribir notas que el malestar te desborda, para, respira, y déjalo para trabajarlo acompañado por tu profesional de referencia. No tienes por qué sostener solo lo que pesa demasiado — para eso estamos los demás.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Tres cosas que hoy sí</h3>
+    <p class="para-que">Ir desmontando el «no valgo» con pruebas pequeñas y reales, cada noche.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Antes de dormir, apunta —en el móvil o en una libreta— tres cosas que hoy sí hiciste o sí saliste a hacer, por pequeñas que sean: me levanté, salí a andar diez minutos, llamé a alguien, bebí más agua, no me hablé tan mal. No busques logros grandes: busca los reales. La mente, cuando está baja, solo apunta lo que falla; esto la obliga a mirar también lo que suma. Con los días, esa lista se convierte en una prueba difícil de negar de que sí avanzas.</div>
+    <p class="meta"><span class="badge">2 min · cada noche</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>La mano en el pecho</h3>
+    <p class="para-que">Darte calma y consuelo con tu propio cuerpo en los momentos de ansiedad o de bajón, sin depender de nadie.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Cuando notes que se te aprieta el pecho o que la cabeza se dispara, ponte una mano en el centro del pecho y la otra sobre la primera, con algo de peso, y siente el calor. Respira despacio unas cuantas veces, notando cómo la mano sube y baja. Puedes decirte por dentro, sin más: «esto es difícil, pero estoy aquí conmigo». Es un gesto sencillo y muy antiguo: el cuerpo entiende el contacto amable y baja la alarma casi solo.</div>
+    <p class="meta"><span class="badge">1–3 min · cuando lo necesites</span></p>
+    <div class="nota-kiko">No siempre habrá alguien al lado. Pero tú sí puedes estar de tu lado. Y eso, con práctica, se aprende.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>«…y sin embargo»</h3>
+    <p class="para-que">Aflojar las etiquetas duras que te pones —como lo de sentirte «muy mayor» o «el patito feo»— sin negar lo que sientes.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Cuando te descubras poniéndote una etiqueta que pesa, no la niegues: añádele un «…y sin embargo» y termina la frase con algo cierto. «Me siento muy mayor… y sin embargo hoy he salido a moverme.» «Me veo el patito feo… y sin embargo hay gente a la que le importo.» «No me perdono… y sin embargo estoy aquí, intentándolo.» No se trata de engañarte, sino de recordar que ninguna etiqueta cuenta la historia entera. Tú eres siempre más que la frase con la que te castigas.</div>
+    <p class="meta"><span class="badge">30 seg · cuando aparezca la etiqueta</span></p>
+  </div>
+
+  <div class="apoyo-pro">
+    Todo esto son herramientas para el día a día, y ayudan de verdad. Pero lo que me contaste sobre no quererte, la soledad y el miedo al futuro merece también ese <strong>espacio acompañado</strong> del que hablábamos en el aviso. No es que estas herramientas «no basten»: es que tú mereces no tener que sostenerlo todo solo. Pedir ayuda para esto es de las cosas más fuertes —no más débiles— que puedes hacer. Y yo sigo aquí, a tu lado, en cada paso.
+  </div>
+</section>
+
+<!-- ===== BLOQUE 3 · REENTRENA TU MENTE ===== -->
+<section class="bloque" id="mente">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Creer más en ti</div>
+    <h2>Reentrena tu mente</h2>
+    <p class="lead">Tú me pediste algo muy concreto: creer más en ti, confiar más en ti. Eso no es un rasgo con el que se nace o no se nace — es un músculo que se entrena. Y aquí tienes cómo empezar a entrenarlo.</p>
+  </div>
+
+  <p class="intro-bloque">Si en «Hacer las paces» aprendíamos a tratarte con cariño, y en «Tus anclas de calma» a bajar las revoluciones, aquí damos un paso más: reescribir la forma en que te ves y en que te hablas del futuro. Nuestra mente es como un camino en el campo: cuanto más se pisa una idea, más marcada queda la vereda. Llevas años pisando el «no valgo», y por eso te sale sola. Vamos a abrir veredas nuevas. No de golpe, sino a base de pasar por ellas hasta que se marquen. Escoge una técnica, quédate con ella un par de semanas, y ve sumando.</p>
+
+  <div class="ficha">
+    <h3>Tu objetivo, bien dibujado</h3>
+    <p class="para-que">Convertir ese «quiero creer más en mí» en algo concreto y claro, para que deje de ser un deseo en el aire y se vuelva un camino que puedes pisar. Y, de paso, quitarle fuerza a tu miedo a «flojear en el plan».</p>
+    <div class="como"><span class="et">Cómo se hace</span>Coge papel y responde con calma a tres preguntas. Primera: ¿qué quiero, dicho en positivo y en pequeño? (no «dejar de ser un desastre», sino «moverme tres días esta semana» o «hablarme mejor un día entero»). Segunda: ¿en qué lo notaré? Descríbelo con detalle — qué haré, cómo me sentiré, qué me diré cuando lo consiga; cuanto más lo veas por dentro, más real se hace. Y tercera: ¿cuál es el primer paso, tan pequeño que sea casi imposible fallar? Empieza solo por ese. Un objetivo bien dibujado no agobia: guía.</div>
+    <p class="meta"><span class="badge">10 min · revísalo cada semana</span></p>
+    <div class="nota-kiko">La confianza no llega antes de actuar: llega de ver que cumples lo que te dices. Por eso empezamos por pasos tan pequeños que no puedas fallarte.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>Dar la vuelta a la etiqueta</h3>
+    <p class="para-que">Desmontar las creencias que cargas sobre ti —«no valgo», «soy el patito feo»— y cambiarlas por otras más ciertas y más útiles, no más falsas.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Escribe la frase dura tal como te la dices: «no valgo». Ahora hazte de detective: busca tres pruebas reales, aunque sean pequeñas, que la contradigan (algo que hiciste bien, alguien a quien le importas, una vez que aguantaste cuando era difícil). Con esas pruebas, escribe una versión nueva de la frase que sea verdad y te sirva para vivir: por ejemplo, «he valido lo suficiente para llegar hasta aquí, y estoy aprendiendo a valorarme más». Cada vez que aparezca la etiqueta vieja, léete la nueva. No se trata de creértela de golpe, sino de darle a tu mente otra opción para elegir.</div>
+    <p class="meta"><span class="badge">15 min de arranque · repítela cuando salte la vieja</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>Ensayarte haciéndolo bien</h3>
+    <p class="para-que">Instalar la constancia que temes no tener, ensayándola por dentro antes de que llegue el momento. El cerebro aprende del ensayo mental casi como del real.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Cierra los ojos e imagínate, con todo el detalle que puedas, haciéndolo bien: te ves llegando a casa cansado y, aun así, poniéndote la ropa cómoda y haciendo tus diez minutos; te oyes diciéndote «venga, un ratito»; sientes la satisfacción tranquila de haber cumplido contigo. Repítelo como una pequeña película, dos o tres veces. Estás grabando en tu cabeza el gesto de ser constante, para que cuando llegue el momento de verdad, tu cuerpo ya «se lo sepa» y le cueste menos.</div>
+    <p class="meta"><span class="badge">3–5 min · la víspera o antes de la actividad</span></p>
+    <div class="nota-kiko">No esperes a tener ganas para empezar: casi nunca llegan primero. Ensáyate haciéndolo sin ganas y verás que, una vez dentro, las ganas aparecen.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>Aprender de quien ya sabe</h3>
+    <p class="para-que">Tomar prestada la confianza y la constancia de alguien que ya las tiene, fijándote en lo que hace, no en lo que es.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Piensa en alguien —conocido, del deporte, de donde sea— que tenga eso que tú quieres: constancia, confianza tranquila, buena relación con su cuerpo. No te compares ni lo idealices; hazte una pregunta práctica: «¿qué hace, en concreto, esta persona?». Quizá se pone una hora fija, quizá no se machaca cuando falla un día, quizá se habla con respeto. Elige una sola de esas conductas y pruébala tú esta semana, como quien se prueba una chaqueta. No necesitas ser como esa persona: solo copiarle un gesto que funciona.</div>
+    <p class="meta"><span class="badge">un gesto nuevo por semana</span></p>
+  </div>
+
+  <div class="nota-kiko">
+    Reentrenar la mente no es engañarte diciéndote que todo va genial. Es dejar de creerte a pies juntillas lo peor que te dices, y darte permiso para pensar también lo bueno. Tú tienes mucho bueno, Carlos. Vamos a que lo veas.
+    <span class="quien">Kiko</span>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 4 · TUS ANCLAS DE CALMA ===== -->
+<section class="bloque bloque--calma" id="calma">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Bajar las revoluciones</div>
+    <h2>Tus anclas de calma</h2>
+    <p class="lead">Pequeñas herramientas para bajarle las revoluciones a ese motor tuyo que no se apaga. Cortas, variadas y para llevar en el bolsillo: sirven en mitad de un atasco, antes de dormir o cuando la cabeza se dispara.</p>
+  </div>
+
+  <p class="intro-bloque">No las hagas todas, ni todas seguidas. Son un pequeño llavero: prueba, quédate con las dos o tres que mejor te funcionen y tira de ellas cuando lo necesites. Que sean variadas es a propósito — para que no te aburran y para que siempre tengas una a mano. Y una cosa importante para ti: en todas se respira con suavidad, sin aguantar el aire ni forzar nada.</p>
+
+  <div class="ficha">
+    <h3>Respiración de calma (coherencia cardíaca)</h3>
+    <p class="para-que">Sincronizar respiración y corazón para bajar la ansiedad en unos minutos. Es de lo más eficaz que existe, y para ti tiene una ventaja: se hace despacio y sin esfuerzo.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Sentado y cómodo, respira a un ritmo lento y parejo: coge aire por la nariz contando hasta cinco, y suéltalo suavemente contando hasta cinco. Sin pausas bruscas, sin aguantar el aire en ningún momento: que la entrada y la salida fluyan como una ola. Repite ese vaivén tranquilo durante unos minutos. Si te ayuda, apoya una mano en el vientre y siente cómo sube y baja.</div>
+    <p class="meta"><span class="badge">3–5 min · 2 o 3 veces al día</span></p>
+    <div class="nota-kiko">Con esto no persigues la calma: la invitas. Y el cuerpo, cuando se lo pones fácil, acude.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>Suelta el aire, suelta la tensión</h3>
+    <p class="para-que">Un atajo para cuando notas que la ansiedad sube de golpe: alargar la salida del aire le dice a tu cuerpo que puede desactivar la alarma.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Coge aire por la nariz sin prisa (unos cuatro segundos) y suéltalo por la boca despacio, como si soplaras muy suave una vela sin llegar a apagarla, haciendo la salida más larga que la entrada (unos seis segundos). Nada de retener el aire: solo inspira y espira largo. Tres o cuatro veces bastan para notar el cambio. La clave está en la exhalación, larga y tranquila.</div>
+    <p class="meta"><span class="badge">1 min · cuando la notes subir</span></p>
+    <div class="precaucion"><span class="et">A tu medida</span>Sin retenciones ni esfuerzos: si en algún momento te marea, vuelve a tu respiración normal. Se trata de soltar, nunca de forzar.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Tu botón de calma</h3>
+    <p class="para-que">Crear una señal propia que active la calma casi al instante, para poder «llamarla» cuando la necesites sin depender del momento.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Elige un recuerdo o un lugar donde te sientas del todo tranquilo y a salvo (un sitio, un momento del pasado, incluso una imagen que te dé paz). Cierra los ojos y métete dentro un minuto: qué ves, qué oyes, cómo se siente el cuerpo ahí. Cuando notes la calma en el pecho, únela a un pequeño gesto sencillo —por ejemplo, posar la palma abierta sobre el muslo— sin apretar nada. Repítelo varias veces en días distintos. Con la práctica, ese pequeño gesto se convierte en un interruptor: lo haces y la calma vuelve.</div>
+    <p class="meta"><span class="badge">2–3 min para «instalarlo» · luego, al instante</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>Tapping: descargar lo que aprieta</h3>
+    <p class="para-que">Aflojar la ansiedad y también esa voz que se maltrata, dando pequeños golpecitos suaves en puntos del cuerpo mientras pones nombre a lo que sientes.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Con la yema de dos o tres dedos, ve dando toquecitos muy suaves —sin apretar, con el peso justo de la mano— en estos puntos, uno tras otro: el lateral de la mano, el nacimiento de la ceja, el lado del ojo, bajo el ojo, bajo la nariz, la barbilla y el centro del pecho. Mientras tocas, di en voz baja lo que sientes y añade algo amable: «aunque estoy nervioso, estoy aprendiendo a cuidarme»; «aunque me hablo mal, quiero tratarme mejor». Da un par de vueltas, sin prisa. No necesitas precisión: si tocas por la zona, sirve.</div>
+    <p class="meta"><span class="badge">3–5 min · cuando lo necesites</span></p>
+    <div class="precaucion"><span class="et">A tu medida</span>Golpecitos muy suaves, nunca fuertes: es un toque, no un masaje. Si un día no te sale poner palabras, hazlo solo con los toques y la respiración — también funciona.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Sacudir y mecerse</h3>
+    <p class="para-que">Descargar la tensión acumulada por vías del cuerpo, no de la cabeza. Muy útil para ti, que llevas el motor revolucionado y la mente siempre activa.</p>
+    <div class="como"><span class="et">Cómo se hace</span>De pie o sentado, empieza sacudiendo suavemente las manos, como si te secaras el agua, y deja que la sacudida suba a los brazos y a los hombros, sin forzar, medio minuto. Luego para, y pasa a un balanceo lento: mécete un poco de un lado a otro, o adelante y atrás, como quien se acuna, respirando tranquilo. El primer gesto suelta; el segundo calma. Es el mismo instinto con el que se mece a un niño para tranquilizarlo — y funciona también contigo.</div>
+    <p class="meta"><span class="badge">1–2 min · cuando estés muy tenso o inquieto</span></p>
+    <div class="nota-kiko">A veces la calma no entra por pensar más, sino por mover el cuerpo un poco. Déjate mecer: sabes más de lo que crees sobre cómo cuidarte.<span class="quien">Kiko</span></div>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 5 · DIGITOPUNTURA ===== -->
+<section class="bloque bloque--calma alt" id="digito">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Acupresión para tu calma</div>
+    <h2>Digitopuntura: tus puntos de calma</h2>
+    <p class="lead">Unos pocos puntos que puedes presionar tú mismo para soltar la tensión, el nerviosismo y la ansiedad, y para ayudarte a dormir. Una herramienta antigua, sencilla y sorprendentemente eficaz, que llevas siempre contigo.</p>
+  </div>
+
+  <p class="intro-bloque">La forma de hacerlo es la misma en todos: apoya la mano sobre el muslo o sobre una mesa para no cansarla, y presiona con la yema del pulgar de la otra mano con una presión <strong>suave y cómoda</strong> —firme solo lo justo para notarla, nunca hasta doler—, con pequeños círculos lentos o simplemente manteniendo el apoyo, mientras respiras despacio. Los que están en los dos lados del cuerpo puedes trabajarlos en uno y en otro. Tómatelo como un gesto de cuidado, no como otra tarea: medio minuto bien hecho ya hace su trabajo. Y algo pensado para ti: nada de pinzas ni de apretar fuerte — si una mano se cansa, cambia o descansa.</p>
+
+  <div class="ficha">
+    <h3>El punto del sosiego — muñeca interna</h3>
+    <p class="para-que">Calmar el nerviosismo y la ansiedad, aliviar las náuseas y las digestiones revueltas, y preparar el cuerpo para dormir. Es uno de los puntos más usados y más agradecidos.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Está en la cara interna del antebrazo, a unos tres dedos por debajo del pliegue de la muñeca, justo en el centro, entre los dos tendones que notas al cerrar un poco la mano. Apoya el antebrazo en el muslo y presiona con el pulgar de la otra mano, suave y sostenido, respirando lento. Cambia luego al otro brazo.</div>
+    <p class="meta"><span class="badge">30–60 seg por lado · cuando estés inquieto o antes de dormir</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>El punto del descanso — borde de la muñeca</h3>
+    <p class="para-que">Serenar la mente, soltar la ansiedad y conciliar mejor el sueño. Un punto muy querido para las noches en que la cabeza no para.</p>
+    <div class="como"><span class="et">Cómo se hace</span>En el pliegue de la muñeca, del lado del dedo meñique, hay una pequeña hondonada justo antes de la mano. Apoya ahí la yema del pulgar y mantén una presión muy suave mientras respiras hondo unas cuantas veces. No necesita apenas fuerza; con un apoyo tranquilo basta. Hazlo en las dos muñecas.</div>
+    <p class="meta"><span class="badge">30–60 seg por lado · ideal al meterte en la cama</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>El punto del pecho abierto — centro del esternón</h3>
+    <p class="para-que">Aflojar esa sensación de opresión en el pecho que trae la ansiedad, y abrir la respiración cuando notas que se te cierra.</p>
+    <div class="como"><span class="et">Cómo se hace</span>En el centro del pecho, sobre el esternón, a la altura aproximada de la línea de los pezones, hay un punto que al presionarlo suele notarse algo sensible. Apoya ahí dos o tres dedos —aquí ni hace falta el pulgar— con una presión muy suave, cierra los ojos y respira llevando el aire hacia esa zona. Es un gesto que reconforta casi al momento.</div>
+    <p class="meta"><span class="badge">1 min · cuando notes el pecho apretado</span></p>
+    <div class="nota-kiko">Cuando la ansiedad cierra el pecho, este punto es como aflojarse un botón por dentro. Respira hacia él y deja que se abra.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>El punto de la mente quieta — entrecejo</h3>
+    <p class="para-que">Parar esa cabeza que no descansa y bajar el ruido mental. Perfecto para ti, que puntúas tan bajo tu capacidad de desconectar.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Es el punto del entrecejo, justo entre las cejas, un poco por encima del nacimiento de la nariz. Aquí no hace falta ninguna fuerza: apoya la yema de un dedo, cierra los ojos y respira despacio, notando cómo la frente se afloja. Puedes acompañarlo de tu respiración de calma. Es de los gestos más sencillos y más eficaces para soltar la cabeza.</div>
+    <p class="meta"><span class="badge">1–2 min · cuando la cabeza no pare, o antes de dormir</span></p>
+  </div>
+
+  <div class="precaucion" style="max-width:820px;margin-top:4px;background:rgba(135,151,122,.1);border-left:3px solid var(--salvia);border-radius:8px;padding:14px 18px;font-family:var(--font-sans);font-weight:300;font-size:.93rem;color:var(--tinta);line-height:1.62;">
+    <span class="et" style="display:block;font-family:var(--font-sans);font-weight:500;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--salvia-osc);margin-bottom:6px;">A tu medida</span>
+    Presión siempre suave y agradable, nunca fuerte ni molesta, y con la mano apoyada para no forzarla. Si un día te cansa, déjalo — no hay ninguna obligación. La digitopuntura acompaña tu calma y tu descanso, pero <strong>no es un tratamiento médico ni sustituye a ninguno</strong>.
+  </div>
+</section>
+
+<!-- ===== BLOQUE 6 · MÉTODO EGOSCUE ===== -->
+<section class="bloque bloque--fisico" id="egoscue">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Reeducar tu postura</div>
+    <h2>Método Egoscue</h2>
+    <p class="lead">Una pequeña secuencia de posturas suaves, en el suelo, pensada para recolocar tu pelvis y tu espalda y quitarle presión a tu L4-L5. No es fuerza ni esfuerzo: es enseñarle a tu cuerpo a volver a su sitio.</p>
+  </div>
+
+  <p class="intro-bloque">El Egoscue es un método que parte de una idea sencilla y muy cierta para ti: muchas molestias de espalda no vienen de una lesión grave, sino de una postura que se ha ido descolocando con los años de silla, volante y tensión. Estas posturas trabajan justo eso — devolver la simetría y la posición neutra a tu pelvis, que es la base de toda la espalda. <strong>Se hacen en este orden, despacio, respirando siempre con normalidad (sin aguantar el aire) y sin llegar nunca a molestia.</strong> Es la secuencia que mejor le sienta a tu caso; con hacerla unas cuantas veces por semana, notarás la diferencia.</p>
+
+  <div class="ficha">
+    <h3>1 · Descarga con piernas elevadas <span style="font-weight:400;color:var(--tinta-suave);font-size:.9rem;">(Static Back)</span></h3>
+    <p class="para-que">La postura de partida del método: resetea la pelvis, descomprime la zona lumbar y le da a tu espalda el punto de reposo desde el que trabajar. Tu ejercicio estrella para la L4-L5, y además relaja muchísimo.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Túmbate boca arriba en el suelo (sobre una esterilla o manta) y apoya las pantorrillas sobre el asiento de una silla o el sofá, de modo que caderas y rodillas queden en ángulo recto, como un escalón. Los brazos, relajados a los lados con las palmas hacia arriba. Y ahí te quedas, respirando tranquilo con el vientre, dejando que la espalda baja se aplane sola contra el suelo. No hay que hacer nada: solo dejar que la zona se afloje y se recoloque.</div>
+    <p class="meta"><span class="badge">5–8 min · es la base de toda la secuencia</span></p>
+    <div class="nota-kiko">Si un día solo puedes hacer esto, ya has cuidado tu espalda. Sencillo y poderoso.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>2 · Deslizamientos de brazos <span style="font-weight:400;color:var(--tinta-suave);font-size:.9rem;">(desde la misma postura)</span></h3>
+    <p class="para-que">Reactivar la postura de tus hombros y tu espalda alta desde la posición de descarga, deshaciendo poco a poco esa curva hacia delante que dejan las horas de pantalla y volante.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Sin moverte de la postura anterior (piernas en la silla), abre los brazos en cruz a la altura de los hombros, apoyados en el suelo, con las palmas hacia el techo y los codos algo doblados, como dos candelabros. Muy despacio, desliza los brazos por el suelo hacia arriba (hacia tu cabeza) y vuelve a bajarlos, sin despegarlos del suelo y sin forzar los hombros. Respira acompañando el movimiento. Es un vaivén lento y cómodo.</div>
+    <p class="meta"><span class="badge">6–8 deslizamientos lentos</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Los brazos van sueltos, sin empujar; si algún hombro se queja, reduce el recorrido. Nada de fuerza en las manos.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>3 · Apretar y soltar con cojín <span style="font-weight:400;color:var(--tinta-suave);font-size:.9rem;">(equilibrar la pelvis)</span></h3>
+    <p class="para-que">Reequilibrar la pelvis desde su base, activando con suavidad la musculatura interna del muslo, que es una de las que gobierna la posición de tu cadera y tu espalda baja.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Túmbate boca arriba con las rodillas dobladas y los pies en el suelo, y coloca un cojín o una almohada entre las rodillas. Aprieta el cojín suavemente con las dos rodillas durante unos segundos (sin apretar la mandíbula ni contener el aire), y suelta despacio. Repite ese apretar-soltar tranquilo. La fuerza es suave: no se trata de machacar, sino de despertar y equilibrar la zona.</div>
+    <p class="meta"><span class="badge">8–10 repeticiones suaves</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Respira con normalidad durante todo el ejercicio, sin aguantar el aire. Presión suave y cómoda, nunca máxima.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>4 · Encontrar tu pelvis neutra <span style="font-weight:400;color:var(--tinta-suave);font-size:.9rem;">(báscula pélvica)</span></h3>
+    <p class="para-que">Aprender a colocar la pelvis en su punto neutro, que es la posición desde la que tu espalda sufre menos en el día a día.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Boca arriba, con las rodillas dobladas y los pies apoyados. Muy despacio, bascula la pelvis: primero lleva la zona baja de la espalda contra el suelo (como si escondieras el ombligo hacia dentro), y luego suéltala hasta dejar el pequeño hueco natural de siempre. Ve y ven entre esas dos posiciones con calma, respirando, y aprende a reconocer el punto intermedio cómodo: esa es tu «pelvis neutra».</div>
+    <p class="meta"><span class="badge">8–10 vaivenes lentos</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>5 · Apertura sobre los antebrazos <span style="font-weight:400;color:var(--tinta-suave);font-size:.9rem;">(extensión suave)</span></h3>
+    <p class="para-que">Cerrar la secuencia devolviéndole a tu espalda un movimiento hacia atrás muy suave que, en muchas molestias de disco, alivia y ayuda a recolocar la zona.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Túmbate boca abajo y, muy despacio, incorpórate apoyándote sobre los antebrazos, como quien se asoma leyendo en la cama, dejando las caderas y la tripa en el suelo. Los hombros lejos de las orejas, el cuello largo y sin tensar. Quédate ahí respirando tranquilo, sin empujar ni forzar: solo dejando que la espalda se abra hacia atrás con suavidad. Al bajar, hazlo lento.</div>
+    <p class="meta"><span class="badge">30 seg – 1 min · con mucha suavidad</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Apoyo en los antebrazos —no en las manos— para no cargar tus muñecas. Este movimiento debe aliviar o ser neutro: <strong>si notas que el dolor o el hormigueo bajan hacia la pierna o el glúteo, deshaz la postura y déjalo</strong>. Lo revisamos juntos en consulta.</div>
+  </div>
+
+  <div class="nota-kiko">
+    No busques resultados de un día. El Egoscue funciona por repetición amable: es como recolocar poco a poco algo que llevaba años torcido. Ten paciencia y confía en la secuencia.
+    <span class="quien">Kiko</span>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 7 · TU ESPALDA EN EL DÍA A DÍA ===== -->
+<section class="bloque bloque--fisico alt" id="espalda">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Donde de verdad se juega el partido</div>
+    <h2>Tu espalda en el día a día</h2>
+    <p class="lead">Tu espalda no se cuida solo en la esterilla: se cuida sobre todo en las mil veces que te sientas, te levantas del coche, te agachas o coges algo. Aquí van los gestos que marcan la diferencia — y un alivio rápido para cuando la notes cargada.</p>
+  </div>
+
+  <p class="intro-bloque">Pasas muchas horas sentado, entre la oficina y el volante, y ahí es donde tu L4-L5 acumula la mayor parte de la carga. La buena noticia es que con unos pocos cambios en tus gestos de siempre le quitas a tu espalda un montón de trabajo, sin necesidad de hacer nada extra: solo hacerlo un poco mejor.</p>
+
+  <div class="ficha">
+    <h3>Alivio rápido: abrazar las rodillas</h3>
+    <p class="para-que">Soltar la zona lumbar en un momento y descansar la tensión acumulada tras muchas horas sentado o conduciendo.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Túmbate boca arriba, lleva una rodilla hacia el pecho y sostenla con las manos por detrás del muslo (no por encima de la rodilla), acercándola solo hasta donde sea cómodo. Respira ahí unos segundos y cambia de pierna. Si te sienta bien, puedes llevar las dos rodillas a la vez, con suavidad. No busques estirar mucho: busca soltar.</div>
+    <p class="meta"><span class="badge">20–30 seg por pierna · cuando notes la espalda cargada</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Sostén el muslo por detrás para no cargar manos ni rodillas. Si notas molestia bajando por la pierna, afloja.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Sentarte bien y no quedarte quieto</h3>
+    <p class="para-que">Reducir la presión sobre tus discos durante las horas de oficina — donde el peor enemigo no es sentarse, sino quedarse horas en la misma postura.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Siéntate con la espalda apoyada en el respaldo (usa un cojín pequeño en la zona lumbar si te ayuda), las caderas un poco más altas que las rodillas y las plantas de los pies en el suelo. Y, sobre todo, muévete: cada media hora larga, levántate, da unos pasos, estírate un poco. Ese pequeño corte cada rato vale más para tu espalda que cualquier silla cara.</div>
+    <p class="meta"><span class="badge">todos los días · una pausa cada 30–40 min</span></p>
+    <div class="nota-kiko">Pon una señal que te avise (una alarma suave, una nota). Tu espalda te lo agradecerá más que ninguna otra cosa que hagas por ella.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>Agacharte y coger peso: la bisagra</h3>
+    <p class="para-que">Proteger tu L4-L5 en el gesto que más la castiga: agacharte doblando la cintura con la espalda curvada.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Para coger algo del suelo, no dobles la cintura: baja doblando las caderas y las rodillas, con la espalda recta, como si fueras una bisagra que se pliega por la cadera. Mantén el objeto pegado al cuerpo al levantarlo y sube empujando con las piernas, no tirando con la espalda. Si es algo pesado, mejor pide ayuda o divídelo — tu espalda primero.</div>
+    <p class="meta"><span class="badge">siempre que cojas algo del suelo</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>Levantarte de la cama y del coche</h3>
+    <p class="para-que">Evitar los tirones bruscos justo en los dos momentos que más se te repiten y que más sorprenden a tu espalda: salir de la cama y bajar del coche tras horas al volante.</p>
+    <div class="como"><span class="et">Cómo se hace</span>De la cama, nunca subas de frente de golpe: gírate primero de lado, baja las piernas fuera de la cama y ayúdate con los brazos para incorporarte, como haciendo palanca. Del coche, gira todo el cuerpo hacia la puerta primero, saca los dos pies fuera y luego levántate con las piernas. Y tras un trayecto largo, antes de cargar con nada, da unos pasos y muévete un poco para «despertar» la espalda.</div>
+    <p class="meta"><span class="badge">cada día, en tus gestos de siempre</span></p>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 8 · ESTIRAMIENTOS SUAVES ===== -->
+<section class="bloque bloque--fisico" id="estiramientos">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Soltar lo que te carga</div>
+    <h2>Estiramientos suaves</h2>
+    <p class="lead">Estirar no es tirar hasta que duela — eso tensa más. Es abrir espacio con suavidad y respiración. Estos cinco están elegidos para soltar justo las zonas que a ti más se te cargan, cuidando siempre tu espalda.</p>
+  </div>
+
+  <p class="intro-bloque">Dos claves para ti antes de empezar. La primera: <strong>caliéntate un poco antes</strong> —camina un minuto por casa o mueve brazos y piernas sin forzar—, porque el músculo en frío se resiste, y el tuyo aún más. La segunda, una técnica más eficaz y más segura que estirar a lo bruto: en los estiramientos que te lo indique, prueba a <strong>«contraer y soltar»</strong> — llega a un punto cómodo, aprieta suavemente la zona contra una resistencia unos segundos, y al soltar notarás que ganas recorrido sin tirones. Nunca llegues al dolor: el estiramiento bueno se siente como un «tira agradable», no como un pellizco. Y respira siempre, sin aguantar el aire.</p>
+
+  <div class="ficha">
+    <h3>Cadena posterior de la pierna (tumbado, con toalla)</h3>
+    <p class="para-que">Soltar la parte de atrás del muslo, que cuando está tensa tira de tu pelvis y carga tu L4-L5. De los más importantes para tu espalda.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Túmbate boca arriba con una rodilla doblada y el pie en el suelo. Pasa una toalla o cinturón por la planta del otro pie y sube esa pierna estirada hacia el techo, ayudándote con la toalla —no hace falta agarrar fuerte, solo sujetar—, hasta notar un tira suave detrás del muslo. Ahí respira. Si quieres usar el «contraer y soltar»: empuja el pie suavemente contra la toalla unos cinco segundos, deja de empujar y verás que la pierna sube un poco más sola. Cambia de lado.</div>
+    <p class="meta"><span class="badge">30 seg por pierna · 2 veces cada una</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>La espalda baja y la cabeza, apoyadas en el suelo todo el rato — así no cargas la lumbar. Sujeta con la toalla, sin apretar con la mano.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Glúteo y piramidal (figura de cuatro)</h3>
+    <p class="para-que">Abrir la cadera y soltar el glúteo profundo, una zona que, cuando se tensa, aprieta el nervio y empeora las molestias de tu espalda baja.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Boca arriba, con las dos rodillas dobladas y los pies en el suelo. Cruza el tobillo de una pierna sobre el muslo de la otra, formando un «cuatro». Lleva las manos por detrás del muslo que queda apoyado y acércalo con suavidad hacia el pecho hasta notar el estiramiento en la nalga de la pierna cruzada. Respira ahí, sin forzar, y cambia de lado.</div>
+    <p class="meta"><span class="badge">30 seg por lado</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Sujeta por detrás del muslo, no por encima de la rodilla, y tira poco a poco. Si notas molestia bajando por la pierna, afloja.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Flexor de la cadera (medio arrodillado)</h3>
+    <p class="para-que">Abrir la parte delantera de la cadera, que se acorta con tantas horas sentado —oficina y conducción— y acaba tirando de tu zona lumbar hacia delante.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Ponte de rodillas y adelanta una pierna, apoyando el pie en el suelo con la rodilla en ángulo recto (como para pedir la mano). Pon una toalla o cojín bajo la rodilla de atrás para que no moleste. Sin arquear la espalda, lleva la cadera un poco hacia delante hasta notar un estiramiento suave en la ingle y el muslo de la pierna de atrás. Mete un poco el ombligo para no cargar la lumbar. Respira y cambia de pierna.</div>
+    <p class="meta"><span class="badge">30 seg por lado</span></p>
+    <div class="nota-kiko">Este, en tu caso, vale doble: casi todo tu día lo pasas sentado, y ahí es donde esta zona se acorta y termina pasándole factura a la espalda.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>Apertura de pecho (en el marco de una puerta)</h3>
+    <p class="para-que">Abrir el pecho y los hombros, que se cierran hacia delante con las pantallas y con la postura de conducir, y que arrastran el cuello y la espalda alta.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Colócate en el hueco de una puerta y apoya los antebrazos en el marco, a la altura de los hombros, con los codos algo por debajo. Da medio paso adelante con una pierna y deja que el pecho se abra suavemente hacia delante, sin arquear la espalda. Notarás cómo se estira la parte delantera de los hombros y el pecho. Respira hondo llevando el aire a esa zona que se abre.</div>
+    <p class="meta"><span class="badge">30 seg · 1 o 2 veces</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Apoyo en los antebrazos, no en las manos, para no cargar muñecas. Avanza poco: es apertura, no empuje.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Cuello y trapecios (sentado)</h3>
+    <p class="para-que">Soltar la tensión del cuello y los hombros, donde se acumula el estrés y las horas de pantalla — y donde tú notas buena parte de tu carga.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Sentado y con la espalda apoyada, deja caer con suavidad la oreja hacia un hombro, sin subir el hombro contrario, hasta notar un estiramiento amable en el lateral del cuello. Para profundizar un poco, deja reposar la mano de ese lado sobre la cabeza sin tirar: solo el peso ligero de la mano. Respira lento unos segundos y cambia de lado. Muy despacio siempre.</div>
+    <p class="meta"><span class="badge">20–30 seg por lado</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Movimientos lentos y sin forzar el cuello; solo el peso suave de la mano, nunca tirando. Si notas mareo o molestia, deshaz y respira.</div>
+  </div>
+
+  <h3 class="sub-titulo">Un extra para tus manos</h3>
+  <p class="sub-lead">Esto no es uno de los cinco estiramientos: es un pequeño añadido, solo para ti. Como tus manos se cansan y pierden soltura, les viene bien un rato amable de movilidad y calor — sin pedirles nada de fuerza. Hazlo cuando quieras, aparte del resto.</p>
+
+  <div class="ficha">
+    <h3>Despertar y soltar las manos</h3>
+    <p class="para-que">Mantener la movilidad y la soltura de tus manos y muñecas, cuidando su circulación sin exigirles fuerza.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Con las manos apoyadas en el regazo o en una mesa, ve abriendo y cerrando los dedos muy despacio, sin apretar el puño: solo el gesto suave de abrir y recoger. Después, dibuja círculos lentos con las muñecas en un sentido y en otro. Y por último, separa y junta los dedos como un abanico, con calma. Todo suave, sin tensar, respirando tranquilo. Si un dedo se resiste, no lo fuerces: acompáñalo hasta donde llegue.</div>
+    <p class="meta"><span class="badge">2–3 min · una vez al día, mejor por la mañana</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>Manos calientes</h3>
+    <p class="para-que">Darte calor, circulación y una sensación agradable en las manos con un gesto muy sencillo, que además calma.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Frota las palmas una contra otra, sin prisa, hasta que las notes calentarse — el roce no necesita fuerza, solo movimiento. Cuando estén templadas, apóyalas un momento sobre los ojos cerrados o sobre la nuca, y siente ese calorcito. Luego, con la mano abierta, recorre suavemente el antebrazo contrario, de la muñeca al codo, como una caricia lenta, y cambia de brazo. Es masaje suave, sin apretar: aquí cuida el calor y el roce amable, no la presión.</div>
+    <p class="meta"><span class="badge">2–3 min · cuando quieras, va muy bien de noche</span></p>
+    <div class="nota-kiko">Unas manos cuidadas con cariño le recuerdan al cuerpo entero que está siendo bien tratado. Empieza por ahí.<span class="quien">Kiko</span></div>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 9 · YOGA RESTAURATIVO ===== -->
+<section class="bloque bloque--calma" id="yoga">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Descansar de verdad</div>
+    <h2>Yoga restaurativo</h2>
+    <p class="lead">No es un yoga de esfuerzo ni de posturas difíciles. Es justo lo contrario: apoyar el cuerpo con cojines y mantas para que se suelte del todo, sin que tengas que sostener nada. Aquí el cuerpo descansa y el sistema nervioso, por fin, encuentra su freno.</p>
+  </div>
+
+  <p class="intro-bloque">Elegí el yoga restaurativo para ti a propósito, porque es el que mejor le sienta a tu momento. En este yoga no sostienes tú la postura: la sostienen los apoyos —una manta enrollada, un par de cojines, una silla, la pared—, y así tus músculos, tu espalda y tu cabeza se sueltan de verdad. Es de lo más eficaz que existe para bajar las revoluciones de ese motor tuyo que no para, y a la vez el más respetuoso con tu espalda, porque nada carga ni fuerza. La clave es esta: <strong>quédate en cada postura un buen rato —tres, cuatro, hasta cinco minutos— respirando lento, sin prisa por pasar a la siguiente.</strong> Al entrar en cada una, haz un pequeño recorrido por el cuerpo aflojando lo que encuentres tenso. No importa la forma: importa el descanso.</p>
+
+  <div class="ficha">
+    <h3>Piernas en alto, sobre cojines</h3>
+    <p class="para-que">Descargar por completo las piernas y la zona lumbar, y darle al cuerpo la señal de que ya puede soltar. Una de las posturas más reparadoras que existen.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Túmbate boca arriba y sube las piernas apoyando las pantorrillas sobre un par de cojines firmes, el asiento de una silla o el sofá, de modo que las rodillas queden cómodas y sin tensión. También puedes apoyar las piernas subidas contra una pared, si te resulta cómodo. Deja los brazos abiertos y las palmas hacia arriba. Cierra los ojos y quédate, notando cómo pesa el cuerpo y cómo la espalda baja se suelta contra el suelo.</div>
+    <p class="meta"><span class="badge">4–5 min · respirando lento</span></p>
+    <div class="nota-kiko">Esta postura, ella sola, ya es medicina para tu sistema nervioso. Si algún día no puedes con más, quédate solo aquí.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>Apertura suave del pecho (sobre manta enrollada)</h3>
+    <p class="para-que">Abrir con delicadeza el pecho y los hombros, que se cierran hacia delante con las pantallas y el volante, y respirar más hondo y más libre.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Enrolla una manta o una toalla grande formando un cilindro y colócalo en el suelo. Túmbate encima de forma que el rollo quede a lo largo de tu columna (desde la parte baja de la espalda hasta la cabeza) o cruzado bajo la parte alta de la espalda, a la altura de los omóplatos — prueba las dos y quédate con la que te resulte más cómoda. Deja caer los brazos abiertos a los lados. El pecho se abre solo, sin que tú hagas nada. Respira notando cómo entra más aire.</div>
+    <p class="meta"><span class="badge">3–4 min</span></p>
+    <div class="precaucion"><span class="et">A tu medida</span>El rollo debe sentirse cómodo, nunca clavarse ni forzar la espalda. Si notas cualquier molestia en la zona lumbar, baja el grosor del rollo o pásalo más arriba. Sales despacio, rodando hacia un lado.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Descanso del niño, con apoyo</h3>
+    <p class="para-que">Recogerte en una postura que reconforta, soltando la espalda y los hombros, con la seguridad de un apoyo que hace todo el trabajo por ti.</p>
+    <div class="como"><span class="et">Cómo se hace</span>De rodillas en el suelo, con las rodillas algo separadas, coloca delante de ti un par de cojines grandes apilados o un almohadón. Déjate caer hacia delante y apoya el pecho y la cabeza sobre los cojines, con los brazos relajados. La idea es que no tengas que sostenerte: el almohadón te recibe. Gira la cabeza hacia el lado que prefieras y, a mitad, cámbiala al otro. Respira hacia la espalda, notando cómo sube y baja.</div>
+    <p class="meta"><span class="badge">2–3 min</span></p>
+    <div class="precaucion"><span class="et">A tu medida</span>Si arrodillarte te molesta en rodillas, tobillos o espalda, sáltate esta postura sin problema — o hazla sentado en una silla, dejándote caer hacia delante sobre unos cojines apoyados en una mesa. Nada de forzar.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Descanso final, arropado (Savasana con apoyos)</h3>
+    <p class="para-que">Cerrar la práctica con una entrega total, dejando que todo lo que has soltado se asiente. Es el puente perfecto hacia el descanso profundo que trabajaremos aparte.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Túmbate boca arriba y coloca un cojín o una manta enrollada bajo las rodillas — esto es importante para ti, porque relaja la zona lumbar y le quita cualquier tensión a tu espalda. Si te resulta más cómodo para tragar, apoya también un cojín fino bajo la cabeza, dejándola algo elevada. Tápate con una manta ligera, aunque no haga frío: el peso y el calor le dicen al cuerpo que está a salvo. Brazos sueltos, palmas hacia arriba, ojos cerrados. No hagas nada. Solo respira y déjate estar, sintiendo cómo el cuerpo entero descansa sobre el suelo.</div>
+    <p class="meta"><span class="badge">5 min · o todo el que quieras</span></p>
+    <div class="nota-kiko">Aquí no hay nada que conseguir. Por una vez, tu única tarea es no hacer nada y dejarte cuidar por el suelo que te sostiene. Te lo mereces.<span class="quien">Kiko</span></div>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 10 · FUERZA SEGURA Y PROPIOCEPCIÓN ===== -->
+<section class="bloque bloque--fisico alt" id="fuerza">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Activar sin agotar</div>
+    <h2>Fuerza segura y propiocepción</h2>
+    <p class="lead">Recuperar tono, estabilidad y equilibrio, pero a tu manera: con suavidad, sin cargas y sin llegar nunca al agotamiento. Aquí la fuerza no es machacarse — es despertar el cuerpo con cabeza, para que te sostenga mejor cada día.</p>
+  </div>
+
+  <p class="intro-bloque">Este es, de toda la parte física, el bloque donde más quiero que vayas con cabeza — y por eso te lo explico bien. Mantener algo de fuerza es una de las mejores cosas que puedes hacer por ti: conserva tu autonomía, te ayuda con la espalda, mejora tu ánimo y le viene de maravilla a tu prediabetes, porque el músculo activo gestiona mejor el azúcar. Pero en tu caso lo haremos siempre en una intensidad suave y controlada, sin esfuerzos máximos y sin forzar. No buscamos rendimiento: buscamos mantenerte fuerte, estable y seguro. Se trata de <strong>activar sin agotar</strong>.</p>
+
+  <div class="apoyo-pro" style="border-color:var(--terracota);">
+    <strong>Tu regla de oro.</strong> Muévete siempre a una intensidad en la que <strong>podrías mantener una conversación</strong> sin quedarte sin aire. Si no podrías hablar, es que te estás pasando: baja el ritmo. Para <strong>antes</strong> de notarte cansado, no después. Respira con normalidad durante todo el ejercicio, sin aguantar nunca el aire al hacer fuerza. Y recuerda lo que hablamos en el aviso: <strong>antes de subir la intensidad, coméntalo con tu médico y déjate revisar el corazón</strong>. Con esa red, nos movemos tranquilos.
+  </div>
+
+  <div class="ficha">
+    <h3>Puente de glúteos</h3>
+    <p class="para-que">Fortalecer el glúteo y toda la cadena posterior —la mejor «faja natural» para tu espalda— sin cargar ni comprimir tu L4-L5, porque se hace tumbado.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Túmbate boca arriba con las rodillas dobladas y los pies apoyados en el suelo, separados al ancho de las caderas. Aprieta suavemente los glúteos y despega la cadera del suelo despacio, subiendo solo hasta formar una línea recta de las rodillas a los hombros — sin arquear de más la espalda. Aguanta un par de segundos arriba, respirando (sin bloquear el aire), y baja despacio, vértebra a vértebra. El movimiento nace del glúteo, no de la lumbar.</div>
+    <p class="meta"><span class="badge">8–10 repeticiones lentas · 1 o 2 series</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Sube solo hasta donde sea cómodo; si notas la zona baja de la espalda en vez del glúteo, baja un poco el recorrido. Nunca aguantes el aire al subir.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Estabilizar el centro (bicho muerto)</h3>
+    <p class="para-que">Fortalecer el centro del cuerpo —lo que de verdad protege tu espalda— sin hacer abdominales clásicos, que para tu L4-L5 están descartados. Aquí el core trabaja sujetando, no doblándose.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Boca arriba, sube las piernas con las rodillas dobladas en ángulo recto (como sentado del revés) y los brazos estirados hacia el techo. Manteniendo la zona baja de la espalda pegada al suelo, baja despacio un brazo por encima de la cabeza y la pierna contraria estirándola hacia el suelo, sin llegar a tocar y sin que la espalda se despegue. Vuelve al centro y cambia de lado. Lento y controlado, respirando todo el rato.</div>
+    <p class="meta"><span class="badge">5–6 veces por lado · despacio</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>La clave es que la espalda baja no se arquee ni se despegue del suelo: si notas que se levanta, baja menos la pierna. Poco recorrido bien hecho vale más que mucho mal hecho.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Sentarse y levantarse de la silla</h3>
+    <p class="para-que">Trabajar la fuerza de las piernas de la forma más útil que existe: el gesto que repites decenas de veces al día. Fortalece muslos y glúteos con total seguridad y sin cargas.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Ponte de pie delante de una silla firme, con los pies al ancho de las caderas. Baja despacio, llevando la cadera hacia atrás como si fueras a sentarte, con la espalda recta y las rodillas siguiendo la dirección de los pies, hasta rozar el asiento — y sube empujando con los talones, sin impulso. Puedes sentarte del todo entre repetición y repetición si lo necesitas. La silla es tu red: te da seguridad y te marca hasta dónde bajar.</div>
+    <p class="meta"><span class="badge">8–10 repeticiones · 1 o 2 series</span></p>
+    <div class="precaucion"><span class="et">A tu medida</span>Si te cuesta, usa una silla más alta o apóyate con una mano en una mesa cercana. Nunca hasta el fallo: para cuando aún te queden fuerzas.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Empuje contra la pared</h3>
+    <p class="para-que">Ganar fuerza de empuje en pecho, hombros y brazos sin cargar tus muñecas ni exigir agarre, y pudiendo graduar el esfuerzo al milímetro. Una flexión, pero de pie y segura.</p>
+    <div class="como"><span class="et">Cómo se hace</span>De pie frente a una pared, apoya las manos a la altura de los hombros, con los brazos estirados y separado un paso. Dobla los codos despacio para acercar el pecho a la pared, manteniendo el cuerpo recto como una tabla, y empuja para volver. Cuanto más separes los pies de la pared, más esfuerzo; cuanto más cerca, más fácil. Ajusta esa distancia hasta encontrar tu punto cómodo.</div>
+    <p class="meta"><span class="badge">8–12 repeticiones · 1 o 2 series</span></p>
+    <div class="precaucion"><span class="et">A tu medida</span>Reparte el apoyo en toda la palma para no cargar solo las muñecas. Empieza cerca de la pared y ve alejándote solo cuando te resulte fácil.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Equilibrio con apoyo (propiocepción)</h3>
+    <p class="para-que">Mejorar tu equilibrio y la estabilidad de tus tobillos, dándole seguridad a un cuerpo que a veces no responde igual. Trabaja la conexión entre tu cerebro y tus pies, y previene tropiezos.</p>
+    <div class="como"><span class="et">Cómo se hace</span>De pie junto a una encimera, una mesa firme o el respaldo de una silla —siempre con algo donde agarrarte cerca—, apóyate ligeramente y levanta un pie del suelo unos centímetros, quedándote sobre la otra pierna unos segundos. Cambia de pierna. A medida que te sientas seguro, puedes rozar el apoyo con un solo dedo en vez de agarrarlo. No se trata de aguantar mucho, sino de que tu cuerpo aprenda a estabilizarse.</div>
+    <p class="meta"><span class="badge">10–15 seg por pierna · 2 o 3 veces cada una</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Ten siempre el apoyo al alcance de la mano, por tus tobillos. Mejor sobrado de seguridad que justo: aquí no hay ninguna prisa por soltarte.</div>
+  </div>
+
+  <h3 class="sub-titulo">El paseo, tu gran aliado</h3>
+  <p class="sub-lead">Tú mismo me dijiste que el deporte te da felicidad y te alivia. El paseo es la forma más sencilla, segura y agradecida de moverte: cuida tu corazón con suavidad, ayuda a tu prediabetes, despeja la cabeza y no le pide nada a tu espalda. Es, para ti, medicina en estado puro — y de la que gusta tomar.</p>
+
+  <div class="ficha">
+    <h3>Tres formas de pasear</h3>
+    <p class="para-que">Que el paseo no se te haga rutina ni aburrimiento —algo que me confesaste que temías— teniendo tres maneras distintas de hacerlo según el día y las ganas.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Ve sumando poco a poco, empezando por donde estés hoy y creciendo sin prisa hasta unos 30 minutos la mayoría de los días.
+    <br><br><strong>· El paseo tranquilo:</strong> a ritmo cómodo, sin objetivo, solo moverte y airearte. El de los días flojos, en los que lo importante es salir.
+    <br><strong>· El paseo con ritmo:</strong> algo más ligero, notando que el cuerpo se activa pero sin perder el aliento (recuerda: tienes que poder hablar). El que más ayuda a tu corazón y tu metabolismo.
+    <br><strong>· El paseo consciente:</strong> caminas atendiendo a lo que ves, oyes y sientes —los pies en el suelo, el aire, los sonidos—. Es andar y meditar a la vez; le sienta de maravilla a esa cabeza que no para.</div>
+    <p class="meta"><span class="badge">de 10 a 30 min · casi todos los días, la variante que te pida el cuerpo</span></p>
+    <div class="nota-kiko">Si un día no te apetece nada del programa, sal a andar aunque sean diez minutos. Volver a casa habiéndote movido un poco cambia el día entero — y cambia cómo te hablas.<span class="quien">Kiko</span></div>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 11 · DESCANSO PROFUNDO ===== -->
+<section class="bloque bloque--calma" id="descanso">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Devolverle la calma a tus noches</div>
+    <h2>Descanso profundo</h2>
+    <p class="lead">Tu descanso es hoy lo que más te está pesando, y por eso este bloque me importa tanto. Dormir bien no es un premio: es la base sobre la que se sostiene todo lo demás — tu ánimo, tu dolor, tu cabeza y hasta tu forma de hablarte. Vamos a recuperarlo, poco a poco y con cariño.</p>
+  </div>
+
+  <p class="intro-bloque">Tú mismo lo dijiste con claridad: tu principal problema para dormir es el estrés y la ansiedad, y te cuesta muchísimo desconectar. Eso nos da una pista muy valiosa — tu insomnio es, en buena parte, un insomnio de <strong>mente encendida</strong>: ese motor tuyo que no se apaga tampoco de noche. Y esa es justo la parte en la que las herramientas de este bloque pueden ayudarte de verdad, porque están pensadas para enseñarle a tu cuerpo y a tu cabeza a bajar las revoluciones cuando llega la hora de descansar. No buscamos que duermas perfecto mañana: buscamos ir devolviéndole, noche a noche, la calma a tu sueño.</p>
+
+  <div class="apoyo-pro">
+    <strong>Algo importante, dicho con cariño.</strong> Me contaste que roncas y que te han dicho que haces pausas al respirar mientras duermes. Todo lo de este bloque te ayudará a dormirte mejor y más profundo — pero esas pausas conviene que las valore un profesional del sueño, porque si hubiera detrás una apnea (algo frecuente y, sobre todo, <strong>muy tratable</strong>), ninguna relajación la resuelve sola, y sí una ayuda médica que podría cambiarte el descanso por completo. Te lo digo con esperanza: puede que parte de tu cansancio tenga una solución más sencilla de lo que imaginas. Merece la pena mirarlo.
+  </div>
+
+  <div class="ficha">
+    <h3>El descanso en dos tiempos</h3>
+    <p class="para-que">Separar el momento de «soltar el día» del momento de dormir, para que no llegues a la cama con la cabeza todavía funcionando a mil. Muy útil para una mente rumiante como la tuya.</p>
+    <div class="como"><span class="et">Cómo se hace</span>En la última hora antes de acostarte, date un primer tiempo de «aterrizaje»: baja las luces, apaga o aleja las pantallas, y haz algo tranquilo y sin exigencia — una infusión, tu respiración de calma, unos minutos del yoga restaurativo, escuchar algo suave. Es la señal de que el día se ha terminado. Solo después, en un segundo tiempo, vete a la cama ya para dormir. Estás dándole a tu cuerpo una transición, en vez de pasar de golpe del acelerador al intento de sueño.</div>
+    <p class="meta"><span class="badge">última hora del día · cada noche</span></p>
+    <div class="nota-kiko">El sueño es tímido: no viene si lo persigues, viene cuando le preparas el terreno y dejas de exigirlo. Esa última hora es el terreno.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>La luz manda en tu reloj</h3>
+    <p class="para-que">Reajustar tu reloj interno usando la luz, que es la herramienta más potente y menos conocida para dormir mejor — y una de las más fáciles de aplicar en tu día.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Por la mañana, busca luz natural pronto: sal un momento a la calle, ábrete a la ventana o da un paseo corto con la primera hora. Esa luz temprana le pone a tu reloj interno la hora de «empieza el día» y, curiosamente, prepara mejor el sueño de esa noche. Y al revés por la tarde-noche: baja la intensidad de las luces de casa y reduce las pantallas, porque su luz le dice a tu cerebro que todavía es de día y frena el sueño. Luz fuerte de día, luz suave de noche.</div>
+    <p class="meta"><span class="badge">cada día · sobre todo la luz de la mañana</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>La cama, solo para dormir</h3>
+    <p class="para-que">Que tu cuerpo vuelva a asociar la cama con el sueño y no con el desvelo o el darle vueltas a la cabeza. Aquí tú ya intuiste bien el camino.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Me contaste que últimamente te vas a la cama para que el sueño te dé estando ya en ella, y no en el sofá — es un acierto, sigue así. Añádele esto: reserva la cama para dormir (nada de trabajar, ver el móvil o rumiar en ella). Y si te metes y a los quince o veinte minutos no llega el sueño y notas que te tensas, no te quedes peleando: levántate, ve a otro sitio con luz tenue, haz algo tranquilo un rato, y vuelve cuando notes sueño de verdad. Así la cama deja de ser el sitio de la lucha y vuelve a ser el del descanso.</div>
+    <p class="meta"><span class="badge">cada noche</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>Si te desvelas de madrugada</h3>
+    <p class="para-que">Tener un plan amable para uno de tus patrones —despertarte de noche o muy temprano sin poder volver a dormir— para que ese rato no se convierta en angustia.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Lo primero: no mires la hora ni empieces a calcular «cuánto me queda» — eso solo enciende la cabeza. Quédate en la penumbra, tumbado, y lleva la atención a algo tranquilo: tu respiración lenta, alargando un poco la salida del aire, o un recorrido suave por el cuerpo aflojando cada zona. Si a los veinte minutos sigues muy despierto y tenso, aplica lo de antes: sal un rato, algo tranquilo y sin pantallas, y vuelve. Y sé amable contigo: descansar tumbado a oscuras, aunque no duermas del todo, también repara. No estás fallando.</div>
+    <p class="meta"><span class="badge">cuando te desveles · sin pelear con el sueño</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Nada de castigarte ni agobiarte por no dormir: la frustración es lo que más espanta al sueño. Cuanto menos lo exijas, más fácil vuelve.</div>
+  </div>
+
+  <h3 class="sub-titulo">Yoga Nidra: el descanso más profundo</h3>
+  <p class="sub-lead">Esta es la joya del bloque. El Yoga Nidra es una relajación profunda que se hace tumbado, sin moverte, dejándote guiar por un recorrido por el cuerpo y la respiración. Si el yoga restaurativo suelta el cuerpo, el Nidra suelta la mente: es de lo más eficaz que conozco para una cabeza que no para como la tuya. Puedes hacerlo antes de dormir —muchas veces te llevará directo al sueño— o en cualquier momento del día en que necesites reiniciar.</p>
+
+  <div class="ficha">
+    <h3>Tu práctica de Yoga Nidra, paso a paso</h3>
+    <p class="para-que">Alcanzar un descanso muy profundo y enseñarle a tu sistema nervioso, por repetición, cómo se siente soltarlo todo. No hay que «conseguir» nada: solo dejarse llevar.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Túmbate boca arriba en un sitio cómodo y calentito, con un cojín bajo las rodillas (para cuidar tu espalda) y tapado con una manta. Cierra los ojos y ve siguiendo estos pasos, muy despacio:
+    <br><br><strong>1. Llega y suelta.</strong> Siente todo tu cuerpo apoyado, pesado, sostenido por el suelo. Haz tres respiraciones lentas, soltando el aire largo, y con cada una afloja un poco más.
+    <br><strong>2. Tu intención (sankalpa).</strong> Repite para ti, sin prisa, una frase corta y en positivo — más abajo te dejo la tuya. Dila tres veces, con calma, como quien planta una semilla.
+    <br><strong>3. Recorre tu cuerpo.</strong> Lleva la atención, una por una, a cada parte, solo nombrándola por dentro y soltándola: mano derecha, brazo derecho, hombro… mano izquierda, brazo izquierdo… la cara, el cuello, el pecho, la tripa, la espalda… cadera, pierna y pie derechos… cadera, pierna y pie izquierdos. Sin prisa, dejando cada zona pesada y suelta.
+    <br><strong>4. Respira y descansa.</strong> Ahora solo observa tu respiración, sin cambiarla, contando hacia atrás unas cuantas respiraciones (diez, nueve, ocho…). Si te duermes, perfecto. Si no, quédate ahí, flotando, unos minutos.
+    <br><strong>5. Vuelve despacio.</strong> Cuando quieras salir, repite una vez más tu intención, mueve poco a poco los dedos, estírate suave y abre los ojos sin prisa.</div>
+    <p class="meta"><span class="badge">15–20 min · varias veces por semana, o al acostarte</span></p>
+    <div class="precaucion"><span class="et">A tu medida</span>Como pasas un buen rato tumbado, ten la cabeza ligeramente elevada con un cojín fino si te resulta más cómodo para tragar la saliva, y no bebas nada estando tumbado. Si en algún momento notas molestia al tragar, incorpórate un poco. Tu comodidad manda.</div>
+  </div>
+
+  <div class="ficha" style="border-left-color:var(--gold);">
+    <h3>Tu sankalpa, tu intención</h3>
+    <p class="para-que">Darle a tu Nidra —y a ti— una semilla propia, tejida desde lo que tú me contaste que necesitas: vivir con calma y reconciliarte contigo.</p>
+    <div class="como"><span class="et">Tu frase</span>Repite, en presente y con cariño, algo así:
+    <br><br><em>«Estoy a salvo. Aprendo a habitar mis días con calma, y me acompaño con cariño.»</em>
+    <br><br>Dila como si ya fuera verdad, porque plantar la intención es el primer paso para que lo sea. Si esta frase no te termina de encajar, hazla tuya: cámbiale las palabras hasta que suene a ti. Lo importante es que sea corta, en positivo y que te llegue. Puede acompañarte no solo en el Nidra, sino en cualquier momento del día en que la necesites.</div>
+    <p class="meta"><span class="badge">al inicio y al cierre de cada Nidra</span></p>
+    <div class="nota-kiko">Elegí esas palabras pensando en ti y en lo que me escribiste. Pero tú las conoces mejor que nadie: si otra frase te representa más, esa es la buena.<span class="quien">Kiko</span></div>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 12 · SUPLEMENTACIÓN Y FITOTERAPIA ===== -->
+<section class="bloque alt" id="suplementacion">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Con cabeza y a tu favor</div>
+    <h2>Suplementación y fitoterapia</h2>
+    <p class="lead">Aquí menos es más. No se trata de llenarte de botes, sino de aprovechar bien lo que ya tomas, sumar solo lo que de verdad te aporta, y —muy importante— dejar fuera todo lo que pudiera llevarse mal con tu medicación. Tu seguridad va siempre por delante.</p>
+  </div>
+
+  <p class="intro-bloque">Antes de nada, una cosa que quiero que tengas clara: <strong>he revisado cada recomendación pensando en tu tratamiento médico de acción prolongada</strong>. Con una medicación así, hay plantas y suplementos que, aunque sean naturales, no convienen — porque «natural» no significa «inofensivo», y algunas pueden interferir con tu tratamiento. Por eso más abajo verás también lo que descarto por ti, con su porqué. Y una norma de oro: <strong>antes de añadir cualquier suplemento o planta nueva, coméntamelo o consúltalo con tu médico</strong>. Con eso, vamos sobre seguro.</p>
+
+  <div class="pauta">
+    <h3>Cómo lo iremos introduciendo</h3>
+    <div class="pauta-fila"><span class="cuando">Desde el inicio</span><span class="que"><strong>Tu magnesio</strong> por la tarde-noche · <strong>infusiones</strong> de calma y descanso · <strong>cúrcuma como especia</strong> en tus platos</span></div>
+    <div class="pauta-fila"><span class="cuando">Desde el inicio</span><span class="que"><strong>Más agua</strong> cada día, acompañando bien tu creatina (este es de los cambios más importantes)</span></div>
+    <div class="pauta-fila"><span class="cuando">Semanas 1–2</span><span class="que"><strong>Boswellia serrata</strong>, para la inflamación y el dolor de tu zona lumbar</span></div>
+    <div class="pauta-fila"><span class="cuando">Cuando la digestión lo pida</span><span class="que"><strong>Jengibre / manzanilla</strong> tras las comidas, según te sienten</span></div>
+    <div class="pauta-fila"><span class="cuando">Tras analítica</span><span class="que"><strong>Vitamina D</strong>, solo si tus niveles lo indican y ajustada a ellos</span></div>
+  </div>
+
+  <p class="intro-bloque" style="margin-bottom:22px;">Te lo presento por orden de entrada, para que tu cuerpo —y tu digestión, que es sensible— se vayan adaptando sin saturarse. Ve sumando de una cosa en una, con calma. Abajo te explico cada una en detalle.</p>
+
+  <div class="ficha">
+    <h3>Tu creatina — mantenla, pero bebe más agua</h3>
+    <p class="para-que">La creatina que ya tomas es un buen apoyo para tu fuerza y tu energía muscular. Pero tiene una condición que en tu caso es clave: necesita que estés bien hidratado.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Sigue con tu dosis habitual, a diario y de forma constante (no hace falta «cargar» ni hacer nada especial). Ahora bien, me dijiste que bebes menos de tres vasos de agua al día — y eso, tomando creatina, conviene mejorarlo. Lo haremos de la forma que es segura para ti: <strong>hidratándote poco a poco a lo largo del día, en sorbos pequeños y frecuentes y sin prisa</strong>, en lugar de vasos grandes de golpe. Y apoyándote en otras vías que se tragan más fácil —infusiones templadas, caldos, gelatinas, fruta con mucha agua— además del agua. Encontrarás esto desarrollado en «Pequeños gestos diarios», adaptado a ti.</div>
+    <p class="meta"><span class="badge">a diario · hidratación en sorbos, a tu manera segura</span></p>
+    <div class="precaucion"><span class="et">A tu medida</span>Por tu dificultad al tragar, la textura segura para hidratarte la marca tu médico o logopeda: sigue siempre su pauta. Nunca fuerces un trago con prisa.</div>
+    <p class="meta"><span class="badge">a diario · con más agua a partir de ahora</span></p>
+    <div class="nota-kiko">Este es, ahora mismo, uno de tus cambios más importantes y más fáciles: beber más agua. Suena a poco, pero te va a ayudar en casi todo — energía, digestión, cabeza y músculo.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>Tu magnesio — un gran aliado para ti</h3>
+    <p class="para-que">El magnesio que ya tomas te viene de perlas justo para lo que más te cuesta: la relajación muscular, la calma del sistema nervioso y el descanso nocturno.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Mantenlo, y prueba a tomarlo preferentemente por la tarde-noche, porque su efecto relajante acompaña bien la llegada del sueño. Si notas que te suelta demasiado el intestino (con tu colon irritable conviene vigilarlo), coméntamelo y ajustamos la forma o la dosis: hay tipos de magnesio más amables con la digestión que otros.</div>
+    <p class="meta"><span class="badge">a diario · mejor por la tarde-noche</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>Tu multivitamínico — sencillez</h3>
+    <p class="para-que">Mantener una base de micronutrientes sin complicarte. En tu caso, con la alimentación equilibrada que ya llevas, cumple su papel de red de seguridad.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Continúa con él como hasta ahora, a diario y con una comida para que siente mejor. No necesitas nada más sofisticado: con una alimentación cuidada, el multivitamínico es el complemento justo. Si en algún momento tu médico valorara revisar algún nivel concreto (por ejemplo vitamina D, muy habitual), sería el único añadido que valdría la pena mirar.</div>
+    <p class="meta"><span class="badge">a diario · con una comida</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>Boswellia serrata — tu antiinflamatorio natural</h3>
+    <p class="para-que">Ayudar a calmar la inflamación y el dolor de tu zona lumbar de forma natural, apoyando a tu espalda desde dentro mientras el trabajo físico hace su parte. Tiene un buen perfil y es segura con tu tratamiento.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Se toma en cápsulas de extracto estandarizado, siguiendo la dosis del fabricante (habitualmente repartida en el día, con las comidas para que siente mejor). Es un antiinflamatorio de acción suave y sostenida: no esperes el efecto de una pastilla el primer día, sino una mejora poco a poco a lo largo de las semanas. La introduciremos cuando ya lleves unos días con el resto asentado, para ir sumando de forma ordenada — lo tienes en el cuadro de más abajo.</div>
+    <p class="meta"><span class="badge">a diario · con las comidas</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Introdúcela sola, sin juntarla con otras novedades, para ver cómo te sienta. Y, como todo lo nuevo, coméntamelo antes de empezar.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Cúrcuma — en tu cocina, con gusto</h3>
+    <p class="para-que">Sumar un antiinflamatorio natural más a tu día, pero por la vía más segura para ti: como especia en tus platos, donde aporta sin ningún riesgo.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Úsala como especia en tu cocina siempre que quieras: en guisos, arroces, cremas de verdura, revueltos. En cantidades de cocina es segura y suma su granito antiinflamatorio. Una pizca de pimienta negra junto a ella, en el plato, ayuda a aprovecharla mejor. Es una forma sencilla y sabrosa de cuidarte sin complicaciones.</div>
+    <p class="meta"><span class="badge">en tus platos · cuando cocines</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Hablo de la cúrcuma como especia en la comida. En forma de <strong>suplemento concentrado</strong> (cápsulas de extracto, sobre todo con pimienta añadida) prefiero dejarla en pausa por prudencia con tu tratamiento — la tienes explicada en «lo que descarto». En el plato: toda la que quieras.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Infusiones para tu calma y tu descanso</h3>
+    <p class="para-que">Sumar un pequeño ritual de calma a tu día con plantas suaves, seguras y agradables, que acompañan tu relajación y tu sueño sin interferir con tu tratamiento.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Incorpora una infusión tranquila en tu «primer tiempo» del descanso, esa última hora antes de dormir: <strong>melisa, tila o manzanilla</strong> son opciones suaves y de buen perfil para ti. Tómala caliente, sin prisa, como parte del ritual de bajar el ritmo — el gesto de prepararla y bebértela despacio ya es media relajación. Me dijiste que estarías dispuesto a incorporar infusiones con gusto: este es su sitio.</div>
+    <p class="meta"><span class="badge">1 taza · en la última hora del día</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>Un gesto para tu digestión</h3>
+    <p class="para-que">Acompañar tu colon irritable con plantas amables que ayudan a calmar la hinchazón y los gases, sin agredir un intestino que ya está sensible.</p>
+    <div class="como"><span class="et">Cómo se hace</span>La <strong>manzanilla</strong> te sirve doble (calma y digestión), y una infusión suave de <strong>jengibre</strong> después de las comidas puede ayudarte con la pesadez y los gases. Ve poco a poco y observa cómo te sienta cada una — con el colon irritable, cada cuerpo es un mundo, y se trata de encontrar lo que a ti te siente bien. Recuerda además lo que ya sabes: fuera champiñones y setas, que has notado que te sientan mal.</div>
+    <p class="meta"><span class="badge">tras las comidas · según te siente</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Introduce las plantas de una en una y en cantidades normales de infusión. Si algo te sienta mal o notas cualquier reacción, déjalo y coméntamelo.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Una analítica para tener tu mapa completo</h3>
+    <p class="para-que">Cuidarte con datos, no a ciegas. Una analítica nos da el mapa real de cómo estás por dentro y nos permite ajustar lo que de verdad necesitas — ni de más, ni de menos.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Te animo a pedirle a tu médico una analítica de control. Nos viene bien por varias razones: para seguir de cerca tu prediabetes (y ver, como tú esperas, cómo va mejorando con el ejercicio), para revisar de paso el tema del tiroides que marcaste como «no lo sé», y para mirar tus niveles de <strong>vitamina D</strong>, que muy a menudo están bajos y que influyen en el ánimo, el descanso, la fuerza muscular y los huesos. Con esos datos en la mano, afinamos tu cuidado de verdad.</div>
+    <p class="meta"><span class="badge">cuando puedas · coméntalo con tu médico</span></p>
+    <div class="nota-kiko">La vitamina D solo la recomendaría después de ver tu analítica, nunca antes: suplementarla a ciegas no es buena idea. Primero el dato, luego el ajuste. Así se hacen bien las cosas.<span class="quien">Kiko</span></div>
+  </div>
+
+  <!-- LO QUE DESCARTO -->
+  <div class="descarto">
+    <h3>Lo que YO descarto para ti</h3>
+    <p class="descarto-intro">Esto es tan importante como lo que sí te recomiendo — porque cuidarte también es protegerte de lo que no te conviene.</p>
+
+    <div class="descarto-item firme">
+      <span class="marca">×</span>
+      <span class="cont">
+        <h4>Hierba de San Juan (hipérico)</h4>
+        <p>La descarto de forma firme y sin excepción. Aunque se usa mucho para el ánimo, interfiere seriamente con tu tratamiento médico de acción prolongada y podría restarle eficacia. Es la planta que más debes evitar: no la tomes en ninguna forma (cápsulas, infusión o gotas). Para tu ánimo trabajaremos con las herramientas emocionales del programa y, si hiciera falta, con el apoyo profesional que ya hemos comentado.</p>
+      </span>
+    </div>
+
+    <div class="descarto-item pausa">
+      <span class="marca">II</span>
+      <span class="cont">
+        <h4>Cúrcuma en suplemento concentrado</h4>
+        <p>En pausa — no la cúrcuma de la cocina (esa, toda la que quieras), sino los extractos concentrados en cápsulas, sobre todo los que llevan pimienta negra añadida. En esa forma potente puede tocar la vía de tu medicación, así que prefiero que la disfrutes en el plato y dejemos el suplemento para valorarlo juntos si hiciera falta.</p>
+      </span>
+    </div>
+
+    <div class="descarto-item pausa">
+      <span class="marca">II</span>
+      <span class="cont">
+        <h4>Suplementos concentrados de plantas por tu cuenta</h4>
+        <p>En pausa: extractos concentrados como equinácea, ajo en dosis altas de suplemento u otros preparados fuertes de herbolario. No porque sean malos en sí, sino porque algunos pueden tocar la misma vía que tu medicación. No los tomes sin consultarlo antes — y si te apetece probar algo, me lo dices y lo valoramos juntos.</p>
+      </span>
+    </div>
+
+    <div class="descarto-item pausa">
+      <span class="marca">II</span>
+      <span class="cont">
+        <h4>Estimulantes y «energizantes» fuertes</h4>
+        <p>En pausa: bebidas muy estimulantes, dosis altas de cafeína o suplementos «pre-entreno». Con tu descanso ya frágil y por prudencia con tu corazón, no te convienen ahora. Un café por la mañana está bien; a partir de media tarde, mejor evita la cafeína para no robarle más horas a tu sueño.</p>
+      </span>
+    </div>
+
+    <div class="descarto-leyenda">
+      <span><span class="p">II</span> En pausa — revisable juntos en consulta</span>
+      <span><span class="f">×</span> Descartado — mejor evitarlo</span>
+    </div>
+  </div>
+
+  <div class="nota-kiko">
+    Que tenga que descartarte algunas cosas no es una limitación: es la prueba de que tu programa está hecho a tu medida y con tu seguridad por delante. Cualquier duda con un suplemento, por pequeña que parezca, me la consultas antes. Para eso estoy.
+    <span class="quien">Kiko</span>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 13 · PEQUEÑOS GESTOS DIARIOS ===== -->
+<section class="bloque" id="gestos">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Lo pequeño, repetido, lo cambia todo</div>
+    <h2>Pequeños gestos diarios</h2>
+    <p class="lead">No todo son ejercicios. A veces lo que más cambia tu día son gestos mínimos, casi invisibles, repetidos con constancia. Aquí van unos pocos, sencillos, que sostienen todo lo demás — y que le sientan especialmente bien a tu momento.</p>
+  </div>
+
+  <p class="intro-bloque">Elige uno o dos para empezar, los que más te apetezcan, y deja que se conviertan en costumbre antes de sumar más. No se trata de hacerlo todo perfecto desde mañana, sino de ir tejiendo, poco a poco, una forma de vivir el día que te cuide sin que tengas que pensarlo. Lo pequeño, cuando se repite, se vuelve grande.</p>
+
+  <div class="ficha">
+    <h3>El agua, tu gesto más importante</h3>
+    <p class="para-que">Hidratarte bien es, ahora mismo, uno de los cambios que más te va a ayudar en todo: energía, cabeza, digestión, músculo y, tomando creatina, es imprescindible. Es tu gesto estrella.</p>
+    <div class="como"><span class="et">Cómo se hace</span>La clave para ti es <strong>repartir la hidratación a lo largo de todo el día, en sorbos pequeños y frecuentes</strong>, sin prisa y sin grandes tragos de golpe. Ten siempre algo cerca —en el coche, en la mesa de la oficina, en casa— para ir dando sorbitos. Y apóyate en texturas y bebidas que se tragan más fácil: infusiones templadas, caldos, gelatinas, fruta con mucha agua (sandía, melón, naranja). Poco y a menudo, mejor que mucho de una vez.</div>
+    <p class="meta"><span class="badge">todo el día · en sorbos pequeños y frecuentes</span></p>
+    <div class="precaucion"><span class="et">A tu medida</span>Por tu dificultad al tragar, la textura segura para ti la marca tu médico o tu logopeda: sigue siempre su indicación, y si te han recomendado espesar los líquidos, hazlo. Bebe siempre sentado, con calma y sin prisa — nunca tumbado ni con la boca llena de otra cosa.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Busca la luz y el aire cada día</h3>
+    <p class="para-que">Salir a la luz natural y al aire libre es un antidepresivo suave y gratuito. Para ti, que arrastras días bajos y mucha soledad, es de las medicinas más sencillas y más eficaces que existen.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Propóntelo como una cita diaria contigo: sal a la calle al menos un rato, mejor con luz de día, aunque sea un paseo corto o sentarte en un banco. La luz natural levanta el ánimo, ayuda a tu descanso y te saca de las cuatro paredes de casa, que cuando uno está solo y bajo se hacen pequeñas. No hace falta que sea mucho: hace falta que sea casi todos los días. El cuerpo y el ánimo agradecen el cielo abierto más de lo que imaginamos.</div>
+    <p class="meta"><span class="badge">a diario · un rato al aire libre, con luz</span></p>
+    <div class="nota-kiko">Los días que menos te apetezca salir suelen ser justo los días que más lo necesitas. En esos, el truco es no pensarlo: coger las llaves y salir. Lo demás llega solo.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>Un perro: compañía y un motivo para salir</h3>
+    <p class="para-que">Poner sobre la mesa algo que puede cambiarte la vida más que cualquier ejercicio: la compañía de un perro. Para alguien que vive solo y se siente solo, no es un capricho — es cuidado del bueno.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Quiero dejarte esta idea con cariño, para que la valores con calma: plantéate la posibilidad de tener un perro. Un perro te daría compañía de verdad en casa, contacto, cariño, y algo muy valioso para ti — un motivo para levantarte, salir a la calle y moverte cada día, llueva o haga sol. Los paseos que hoy te cuesta hacer por ti, los harías por él. Además, se sabe que convivir con un animal baja el estrés, alivia la soledad y da propósito a los días. Piénsalo sin prisa, valorando tu situación y lo que puedes ofrecerle: si te encaja, puede ser una de las mejores decisiones que tomes por tu bienestar.</div>
+    <p class="meta"><span class="badge">una idea para valorar, sin prisa</span></p>
+    <div class="nota-kiko">Te lo digo de corazón: un compañero de cuatro patas ha sacado a mucha gente de sus peores momentos. No cura, pero acompaña — y a veces acompañar es justo lo que más falta hace.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>Un pequeño hilo con alguien cada día</h3>
+    <p class="para-que">Ir tejiendo, poco a poco, algo de contacto humano — porque la soledad se alivia con gestos pequeños y sostenidos, no de golpe. Un hilo cada día acaba siendo una red.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Proponte un gesto mínimo de conexión al día: un mensaje a alguien, una llamada corta, charlar un momento con quien te cruzas, un «¿qué tal?» sincero. No hace falta que sea profundo ni que tengas mucha gente cerca; se trata de no pasar el día entero sin un solo hilo con otra persona. Y si te apetece, poco a poco, buscar sitios donde coincidir con gente (una actividad, un grupo, un voluntariado): no para forzarte, sino para darte oportunidades de que la vida traiga compañía.</div>
+    <p class="meta"><span class="badge">a diario · un gesto pequeño de contacto</span></p>
+    <div class="precaucion"><span class="et">Con cuidado</span>Sé amable contigo si algún día no te sale: no es un examen. La soledad no se arregla en una semana, pero sí se afloja hilo a hilo. Y recuerda que el apoyo profesional del que hablamos también es una forma de no estar solo con esto.</div>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 14 · TU MESA ===== -->
+<section class="bloque bloque--fisico alt" id="mesa">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Comer para cuidarte, sin agobios</div>
+    <h2>Tu mesa</h2>
+    <p class="lead">Me dijiste que estás conforme con tu alimentación, y me parece estupendo — se nota que ya cuidas este terreno. Así que aquí no vengo a corregirte nada: solo a dejarte unos pocos apoyos que reman a favor de lo que tú ya quieres conseguir.</p>
+  </div>
+
+  <p class="intro-bloque">Lo tomas como quieras: coge lo que te encaje y deja lo que no. La idea no es cambiar tu forma de comer, sino sumarle algún detalle que ayude a dos cosas que te importan — tener una energía más estable (y acompañar esa prediabetes que quieres revertir) y llevar mejor las digestiones, que sé que a veces te molestan. Sin listas de prohibiciones y sin contar nada. Comer bien también es disfrutar.</p>
+
+  <div class="ficha">
+    <h3>La guía del plato, sin contar nada</h3>
+    <p class="para-que">Tener una referencia visual sencilla para componer comidas equilibradas de un vistazo, sin pesar alimentos ni contar calorías. Miras el plato y ya está.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Imagina tu plato dividido así:
+    <br><br><strong>· La mitad, verduras u hortalizas:</strong> cocinadas o en ensalada, del color que quieras. Son las que llenan, cuidan tu digestión y estabilizan la energía.
+    <br><strong>· Un cuarto, proteína:</strong> pescado, huevo, pollo, legumbre bien tolerada, carne magra. Sacia y cuida tu músculo.
+    <br><strong>· Un cuarto, hidratos de buena calidad:</strong> mejor integrales o el tubérculo o legumbre — arroz integral, patata, pan integral, quinoa.
+    <br><strong>· Un chorrito de grasa buena:</strong> aceite de oliva virgen, aguacate, un puñadito de frutos secos.
+    <br><br>No tienes que hacerlo en todas las comidas ni de forma estricta: es solo una brújula para que la mayoría de tus platos vayan por ahí.</div>
+    <p class="meta"><span class="badge">una referencia visual · para la mayoría de comidas</span></p>
+  </div>
+
+  <div class="ficha">
+    <h3>Comer para una energía estable</h3>
+    <p class="para-que">Mantener tu energía más pareja a lo largo del día y acompañar tu objetivo con la prediabetes, evitando los altibajos que dan hambre, bajón y sueño.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Un par de gestos sencillos ayudan mucho: <strong>empieza el plato por la verdura y la proteína</strong> antes que por el hidrato — con ese simple orden, la energía sube de forma más suave. Y acompaña siempre los hidratos de algo de fibra, proteína o grasa buena (por ejemplo, fruta con un puñado de frutos secos, o pan integral con aguacate o huevo), en vez de tomarlos solos. Ejemplos de tu día: un desayuno de yogur o huevo con fruta y avena; una comida siguiendo la guía del plato; una cena ligera y algo más temprana, que además te ayuda a dormir. No se trata de quitar, sino de combinar mejor.</div>
+    <p class="meta"><span class="badge">en tus comidas de siempre · combinando, no restringiendo</span></p>
+    <div class="nota-kiko">Nada de alimentos «prohibidos» ni de castigarte con la comida. Se trata de darle a tu cuerpo energía sostenida, no de pelearte con el plato. Comer tranquilo también alimenta.<span class="quien">Kiko</span></div>
+  </div>
+
+  <div class="ficha">
+    <h3>Cuidar tu digestión</h3>
+    <p class="para-que">Llevar mejor la hinchazón, los gases y las molestias que me comentaste, tratando bien a un intestino que ya está sensible.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Lo que más ayuda a un colon irritable no es tanto qué comes, sino cómo: <strong>come despacio, masticando bien, en raciones moderadas y sin prisa</strong> — comer rápido y con ansiedad hincha y da gases. Ve fijándote en qué alimentos concretos te sientan peor a ti (cada persona tiene los suyos) y apúntalos, para conocer tu mapa. Recuerda lo que ya sabes: fuera champiñones y setas, que has notado que no te van. Y si quieres, introduce muy poco a poco algún fermentado suave (un yogur natural, kéfir en poca cantidad) para cuidar tu flora, observando cómo lo toleras. Las infusiones de jengibre y manzanilla que ya tienes, después de comer, te acompañan aquí.</div>
+    <p class="meta"><span class="badge">cada comida · despacio y observándote</span></p>
+    <div class="precaucion"><span class="et">A tu medida</span>Si las molestias digestivas son frecuentes o intensas, coméntalo con tu médico para descartar otras causas y afinar. Lo de aquí acompaña, no sustituye esa valoración.</div>
+  </div>
+
+  <div class="ficha">
+    <h3>Comer seguro y con calma</h3>
+    <p class="para-que">Cuidar tu seguridad al comer por tu dificultad para tragar, para que las comidas sean tranquilas y sin sustos. Este apartado es de cuidado, no de dieta.</p>
+    <div class="como"><span class="et">Cómo se hace</span>Come siempre <strong>sentado y erguido, sin prisa, en bocados pequeños y masticando bien</strong> antes de tragar. Evita hablar con comida en la boca y no comas con la atención puesta en otra cosa: date ese rato con calma. Elige texturas que te resulten fáciles y seguras, y si notas que algún alimento se te atraganta con facilidad, adáptalo (troceado fino, más blando, con una salsa que ayude a que resbale) o déjalo. Tras comer, quédate un rato incorporado antes de tumbarte.</div>
+    <p class="meta"><span class="badge">en cada comida · calma y bocados pequeños</span></p>
+    <div class="precaucion"><span class="et">A tu medida</span>La textura segura para ti la marcan tu médico y tu logopeda: sigue siempre su pauta. Si te atragantas a menudo, es importante que se lo comentes a tu equipo médico — hay estrategias que pueden ayudarte mucho.</div>
+  </div>
+
+  <div class="nota-kiko">
+    Insisto en lo primero: ya partes de una buena base, y eso es mérito tuyo. Estos apoyos son la guinda, no el pastel. Quédate con uno o dos que te encajen y olvídate del resto sin ninguna culpa.
+    <span class="quien">Kiko</span>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 15 · LECTURAS RECOMENDADAS ===== -->
+<section class="bloque" id="lecturas">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Buena compañía para el camino</div>
+    <h2>Lecturas recomendadas</h2>
+    <p class="lead">Un buen libro acompaña, y en los ratos a solas puede ser de la mejor compañía que hay. Estos cinco los he elegido pensando en ti y en lo que estás trabajando — no para llenarte de tarea, sino para caminar a tu lado.</p>
+  </div>
+
+  <p class="intro-bloque">No tienes que leerlos todos ni en orden. Empieza por el que más te llame según el día y las ganas, y léelo a ratos, sin prisa — todos son de capítulos cortos y lectura amable, pensados para que no se te hagan cuesta arriba. Y recuerda: un libro acompaña y da luz, pero no sustituye el apoyo profesional del que hemos hablado. Que sea un compañero de viaje, no un deber más.</p>
+
+  <div class="libro">
+    <div class="libro-cab">
+      <h3>Sé amable contigo mismo</h3>
+      <span class="autor">— Kristin Neff</span>
+    </div>
+    <p class="porque"><span class="et">Por qué este, para ti</span>Es, para mí, tu lectura más importante. Trata justo de eso que me dijiste que más te cuesta: dejar de hablarte mal y aprender a tratarte con amabilidad. La autora enseña, con calidez y ejercicios muy sencillos, a ser tu aliado en vez de tu peor enemigo. Léelo despacio, y deja que te vaya calando esa idea de que mereces el mismo cariño que le darías a cualquiera al que quieres.</p>
+  </div>
+
+  <div class="libro">
+    <div class="libro-cab">
+      <h3>El milagro de mindfulness</h3>
+      <span class="autor">— Thich Nhat Hanh</span>
+    </div>
+    <p class="porque"><span class="et">Por qué este, para ti</span>Un librito luminoso y muy sencillo para esa mente tuya que no para y que tanto te cuesta desconectar. No es filosofía complicada: son gestos pequeños para estar más presente y más en calma en lo cotidiano, hasta fregando los platos. De capítulos breves, perfecto para leer un poquito cada día. Te ayudará a bajar revoluciones y a habitar un poco más el momento, en vez de vivir siempre adelantado a lo que vendrá.</p>
+  </div>
+
+  <div class="libro">
+    <div class="libro-cab">
+      <h3>Los cuatro acuerdos</h3>
+      <span class="autor">— Miguel Ruiz</span>
+    </div>
+    <p class="porque"><span class="et">Por qué este, para ti</span>Un libro corto y claro que acompaña de maravilla el trabajo de «Reentrena tu mente». Habla de cómo esas creencias que arrastramos sobre nosotros —el «no valgo», el «patito feo»— no son verdades, sino acuerdos que hicimos y que podemos cambiar. Te dará herramientas sencillas para no tomarte todo tan a pecho y para dejar de castigarte con tus propias palabras. Se lee en un suspiro y deja poso.</p>
+  </div>
+
+  <div class="libro">
+    <div class="libro-cab">
+      <h3>El hombre en busca de sentido</h3>
+      <span class="autor">— Viktor Frankl</span>
+    </div>
+    <p class="porque"><span class="et">Por qué este, para ti</span>Este es más hondo, y lo elijo pensando en tu miedo al futuro y en convivir con lo que no se puede cambiar. Su autor, que vivió lo peor, descubrió que incluso cuando no podemos elegir lo que nos pasa, siempre nos queda elegir cómo lo afrontamos y qué sentido le damos. No es un libro triste: es un libro que da fuerza y esperanza. Te puede acompañar mucho en esos pensamientos de «qué será de mí», recordándote que tu vida sigue teniendo valor y sentido por delante.</p>
+  </div>
+
+  <div class="libro">
+    <div class="libro-cab">
+      <h3>Ikigai</h3>
+      <span class="autor">— Héctor García y Francesc Miralles</span>
+    </div>
+    <p class="porque"><span class="et">Por qué este, para ti</span>Para terminar, uno luminoso y ligero. Habla del «ikigai», eso que en Japón entienden como la razón para levantarse cada mañana, y de cómo el propósito, el movimiento suave y los pequeños placeres alargan y alegran la vida. Conecta con tu deseo de vivir estable los años que tienes por delante, y con eso que ya estamos sembrando: motivos para levantarte, moverte y cuidarte. Es amable, esperanzador y fácil de leer — de los que dejan buen sabor.</p>
+  </div>
+
+  <div class="nota-kiko">
+    Si un libro no te engancha, déjalo sin culpa y ve al siguiente: leer tiene que sumar, no pesar. Y si alguno te remueve más de la cuenta, ciérralo y, si quieres, lo comentamos — para eso estoy.
+    <span class="quien">Kiko</span>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 16 · TU SEMANA ===== -->
+<section class="bloque bloque--fisico alt" id="semana">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Todo junto, sin agobios</div>
+    <h2>Tu semana</h2>
+    <p class="lead">Aquí tienes una propuesta de cómo repartir todo a lo largo de la semana, pensada para tus 30 o 45 minutos al día. Fíjate: son días ligeros y variados a propósito, para que nunca se te haga cuesta arriba ni aburrido.</p>
+  </div>
+
+  <p class="intro-bloque">Léela como lo que es: <strong>una sugerencia flexible, no una obligación</strong>. Muévela, cámbiala, salta un día, repite lo que más te guste — escucha a tu cuerpo siempre por encima del plan. Está montada con cabeza (sin cargar fuerza dos días seguidos, con el descanso cuidado y el fin de semana más suave), pero manda tu día a día. Y recuerda esa idea que te repetiré siempre: no hace falta hacerlo perfecto ni entero. Empezar y volver, aunque falles, es lo que de verdad funciona.</p>
+
+  <p class="intro-bloque" style="margin-bottom:20px;"><strong>Cada día, tus tres anclas mínimas:</strong> hidratarte en sorbos a lo largo del día · un rato de luz y aire libre · un pequeño gesto de calma. Con eso solo, ya te estás cuidando. Lo demás, rota.</p>
+
+  <div class="sem-dia">
+    <div class="dia-nombre">Lunes</div>
+    <div class="dia-plan">Tu <strong>secuencia de Egoscue</strong> (15 min) para arrancar la semana recolocando la espalda · <strong>paseo tranquilo</strong> de 15 min · por la noche, tu <strong>respiración de calma</strong> y, si quieres, un <strong>Yoga Nidra</strong> para dormir.</div>
+  </div>
+
+  <div class="sem-dia">
+    <div class="dia-nombre">Martes</div>
+    <div class="dia-plan"><strong>Estiramientos suaves</strong> (10-15 min), con tu extra de manos si te apetece · <strong>digitopuntura</strong> si notas tensión o nervio · dedica un rato a <strong>«dibujar tu objetivo»</strong> de la semana.</div>
+  </div>
+
+  <div class="sem-dia">
+    <div class="dia-nombre">Miércoles</div>
+    <div class="dia-plan"><strong>Fuerza segura</strong> (10-15 min), sin llegar al cansancio y a tu ritmo · <strong>paseo con ritmo</strong>, ese que activa sin perder el aliento · por la noche, apunta en tu diario <strong>tres cosas que hoy sí</strong>.</div>
+  </div>
+
+  <div class="sem-dia">
+    <div class="dia-nombre">Jueves</div>
+    <div class="dia-plan"><strong>Yoga restaurativo</strong> (15 min) para soltar el cuerpo con apoyos · tu <strong>botón de calma</strong> o un poco de <strong>tapping</strong> si el día viene revuelto · una <strong>infusión</strong> y tu rato tranquilo.</div>
+  </div>
+
+  <div class="sem-dia">
+    <div class="dia-nombre">Viernes</div>
+    <div class="dia-plan">Repasa <strong>tu espalda en el día a día</strong> (posturas y gestos) · <strong>paseo consciente</strong>, atendiendo a lo que ves y sientes · si te apetece, una herramienta amable de <strong>«hacer las paces contigo»</strong>.</div>
+  </div>
+
+  <div class="sem-dia finde">
+    <div class="dia-nombre">Sábado</div>
+    <div class="dia-plan">Lo que te pida el cuerpo: <strong>fuerza suave o estiramientos</strong> · un <strong>paseo más largo</strong>, mejor en un sitio con verde y aire · por la noche, <strong>Yoga Nidra</strong> con tu intención.</div>
+  </div>
+
+  <div class="sem-dia finde">
+    <div class="dia-nombre">Domingo</div>
+    <div class="dia-plan">Día libre y amable. Solo tus <strong>tres anclas</strong> (agua, luz, calma) · descanso, un rato de <strong>lectura</strong> · y un <strong>gesto de conexión</strong>: una llamada, un mensaje, o un buen paseo (mejor aún si es en compañía).</div>
+  </div>
+
+  <div class="modo-minimo">
+    <h3>Modo mínimo, para los días flojos</h3>
+    <p>Habrá días en que no te apetezca nada — y está bien, nos pasa a todos. Para esos días tienes tu <strong>modo mínimo</strong>, que dura dos o tres minutos: un <strong>botón de calma</strong> (o tres respiraciones largas), <strong>salir un momento a la luz</strong> y unos <strong>sorbos de agua</strong>. Nada más. Con eso, aunque «flojees», no rompes con el plan: sigues cuidándote, en pequeñito. Y mañana será otro día. Esto es justo lo contrario de abandonar — es aprender a volver.</p>
+  </div>
+
+  <div class="nota-kiko">
+    Un plan no está para hacerte sentir mal cuando no lo cumples, sino para acompañarte cuando lo necesitas. Si un día lo dejas, no ha pasado nada: mañana retomas sin reproches. La constancia se construye volviendo, no siendo perfecto.
+    <span class="quien">Kiko</span>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 17 · TU DIARIO ===== -->
+<section class="bloque" id="diario">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Un espacio solo para ti</div>
+    <h2>Tu diario</h2>
+    <p class="lead">Escribir lo que uno lleva dentro ordena la cabeza y aligera el corazón. Este es tu rincón privado, sin juicios y sin nadie mirando — para desahogarte, para aprender a hablarte mejor y para ir viendo, negro sobre blanco, todo lo que sí avanzas.</p>
+  </div>
+
+  <p class="intro-bloque">No hace falta escribir mucho ni bonito: con unas líneas basta. Tienes tres espacios, cada uno para algo distinto. Úsalos cuando te apetezca, aunque sea uno solo y a ratos. Lo que escribas se guarda en tu propio dispositivo, para que puedas volver a leerlo. Y si un día solo quieres marcar cómo te sientes sin escribir, también vale.</p>
+
+  <div class="diario">
+    <div class="diario-tabs">
+      <button class="diario-tab activa" onclick="abrirTab(event,'tab-siento')">Cómo me siento</button>
+      <button class="diario-tab" onclick="abrirTab(event,'tab-hablarme')">Hablarme bien</button>
+      <button class="diario-tab" onclick="abrirTab(event,'tab-pude')">Lo que hoy sí pude</button>
+    </div>
+
+    <!-- Pestaña 1 -->
+    <div class="diario-panel activo" id="tab-siento">
+      <p class="guia">Suelta aquí lo que traiga el día, sin filtros. Ponerle nombre a lo que sientes ya es media calma.</p>
+      <div class="animo" data-grupo="siento">
+        <button onclick="marcarAnimo(this)">Tranquilo</button>
+        <button onclick="marcarAnimo(this)">Cansado</button>
+        <button onclick="marcarAnimo(this)">Nervioso</button>
+        <button onclick="marcarAnimo(this)">Triste</button>
+        <button onclick="marcarAnimo(this)">Con esperanza</button>
+      </div>
+      <textarea class="campo" id="campo-siento" placeholder="Hoy me siento... / Lo que me ronda por dentro es..."></textarea>
+      <div class="diario-acciones">
+        <button class="btn-guardar" onclick="guardar('siento')">Guardar</button>
+        <span class="guardado-ok" id="ok-siento">Guardado</span>
+      </div>
+      <div class="entradas" id="lista-siento"></div>
+    </div>
+
+    <!-- Pestaña 2 -->
+    <div class="diario-panel" id="tab-hablarme">
+      <p class="guia">¿Qué te has dicho hoy con dureza? Escríbelo, y debajo dale la vuelta: ¿cómo se lo dirías a alguien a quien quieres?</p>
+      <textarea class="campo" id="campo-hablarme" placeholder="La voz dura me dijo... / Y en su lugar, con más verdad y cariño, me digo..."></textarea>
+      <div class="diario-acciones">
+        <button class="btn-guardar" onclick="guardar('hablarme')">Guardar</button>
+        <span class="guardado-ok" id="ok-hablarme">Guardado</span>
+      </div>
+      <div class="entradas" id="lista-hablarme"></div>
+    </div>
+
+    <!-- Pestaña 3 -->
+    <div class="diario-panel" id="tab-pude">
+      <p class="guia">Apunta tres cosas que hoy sí hiciste o sí saliste a hacer, por pequeñas que sean. Con los días, esta lista será tu mejor prueba.</p>
+      <textarea class="campo" id="campo-pude" placeholder="Hoy sí... / También pude... / Y además..."></textarea>
+      <div class="diario-acciones">
+        <button class="btn-guardar" onclick="guardar('pude')">Guardar</button>
+        <span class="guardado-ok" id="ok-pude">Guardado</span>
+      </div>
+      <div class="entradas" id="lista-pude"></div>
+    </div>
+  </div>
+
+  <div class="nota-kiko">
+    Ábrelo sin presión: no es una tarea, es un refugio. Y cuando lleves semanas, vuelve a leer las primeras páginas — vas a ver un camino que hoy quizá no notas, pero que estás recorriendo.
+    <span class="quien">Kiko</span>
+  </div>
+</section>
+
+<!-- ===== BLOQUE 18 · CÓMO VOY ===== -->
+<section class="bloque bloque--calma alt" id="comovoy">
+  <div class="seccion-titulo">
+    <div class="barra"></div>
+    <div class="kicker">Sin nota, sin juicio</div>
+    <h2>Cómo voy</h2>
+    <p class="lead">De vez en cuando, párate un momento y mira cómo estás. No es un examen: es una brújula para ti, para notar el camino que vas haciendo. Marca cada aspecto del 1 al 10, como lo sientas hoy — sin pensarlo mucho.</p>
+  </div>
+
+  <p class="intro-bloque">Hazlo cada una o dos semanas, con calma. Y guárdalo: lo valioso no es la cifra de un día, sino ver cómo evoluciona con el tiempo. Cuando lleves unas cuantas veces, vas a poder mirar atrás y ver, con números, un avance que en el día a día quizá no notas. Recuerda: aquí no se aprueba ni se suspende. Un número bajo un día no borra tu camino — solo te dice qué necesita hoy un poco más de cariño.</p>
+
+  <div class="evaluacion">
+    <div class="slider-fila">
+      <div class="slider-cab"><label>Mi descanso</label><span class="valor" id="v-descanso">5</span></div>
+      <input type="range" min="1" max="10" value="5" id="s-descanso">
+    </div>
+    <div class="slider-fila">
+      <div class="slider-cab"><label>Mi calma mental</label><span class="valor" id="v-calma">5</span></div>
+      <input type="range" min="1" max="10" value="5" id="s-calma">
+    </div>
+    <div class="slider-fila">
+      <div class="slider-cab"><label>Mi cuerpo (menos dolor y tensión)</label><span class="valor" id="v-cuerpo">5</span></div>
+      <input type="range" min="1" max="10" value="5" id="s-cuerpo">
+    </div>
+    <div class="slider-fila">
+      <div class="slider-cab"><label>Mi energía y mis ganas</label><span class="valor" id="v-energia">5</span></div>
+      <input type="range" min="1" max="10" value="5" id="s-energia">
+    </div>
+    <div class="slider-fila">
+      <div class="slider-cab"><label>Cómo me hablo y me trato</label><span class="valor" id="v-trato">5</span></div>
+      <input type="range" min="1" max="10" value="5" id="s-trato">
+    </div>
+    <div class="slider-fila">
+      <div class="slider-cab"><label>La confianza en mí mismo</label><span class="valor" id="v-confianza">5</span></div>
+      <input type="range" min="1" max="10" value="5" id="s-confianza">
+    </div>
+
+    <div class="eval-resultado">
+      <div class="promedio-num" id="promedio-num">5.0</div>
+      <div class="promedio-lab">Tu media de hoy</div>
+      <div class="promedio-msg" id="promedio-msg"></div>
+    </div>
+
+    <div class="eval-acciones">
+      <button class="btn-guardar" onclick="guardarEval()">Guardar este registro</button>
+      <span class="guardado-ok" id="ok-eval">Guardado</span>
+    </div>
+
+    <div class="eval-historial" id="eval-historial"></div>
+  </div>
+
+  <div class="nota-kiko">
+    Si un día ves los números más bajos, no te castigues: son justo los días en que este programa está para acompañarte, no para exigirte. Y si los ves subir, aunque sea poquito, párate a reconocértelo. Ese avance es tuyo, lo has hecho tú.
+    <span class="quien">Kiko</span>
+  </div>
+</section>
+
+<!-- ===== CARTA DE CIERRE ===== -->
+<section id="cierre">
+  <div class="carta">
+    <div class="encabezado-carta">Una última carta, para el camino</div>
+    <h2>Nos vemos en el camino, Carlos</h2>
+
+    <p>Si has llegado hasta aquí, hasta esta última página, ya has hecho algo importante: has decidido cuidarte. Y quiero que sepas que reconozco lo que eso significa viniendo de ti, que empezaste este cuestionario diciéndome que te costaba creer en ti mismo. Solo por estar leyendo esto, ya me estás demostrando —y demostrándote— que hay en ti muchas más ganas de vivir bien de las que a veces sientes.</p>
+
+    <p>Al principio de todo te dije que veía a alguien que ama moverse y a quien el cuerpo frenaba; a alguien que cargaba con una enfermedad y un miedo al futuro; y, sobre todo, a alguien que se trataba con una dureza que no merecía. Ahora, al cerrar, quiero recordarte lo que hemos puesto en tus manos para cada una de esas cosas. Para tu cuerpo: formas de moverte seguras, que respetan tu espalda y tu salud, para que vuelvas a disfrutar del movimiento sin miedo. Para tu cabeza que no para: herramientas de calma y de descanso para bajarle las revoluciones a ese motor tuyo. Y para lo más importante de todo —esa voz que te maltrata—: un camino, despacio y con cariño, para empezar a hablarte bien y a perdonarte.</p>
+
+    <p>No te voy a decir que a partir de mañana todo será fácil, porque no sería verdad, y tú y yo nos hemos hablado siempre con la verdad por delante. Habrá días buenos y días flojos. Días en que hagas todo el plan y días en que no puedas con nada. <span class="resalte">Y quiero pedirte una sola cosa, si te quedas con una de todas: el día que falles, vuelve sin castigarte. Volver, y no el látigo, es lo que cura.</span> No necesito que seas perfecto. Necesito que seas constante a tu manera, amable contigo, y que no tires la toalla.</p>
+
+    <p>Me dijiste que esperabas poder vivir de forma estable los años que tienes por delante. Quédate con esto: esa vida estable no está en un futuro lejano que da miedo — se construye en el presente, en cada pequeño gesto de cuidado que hagas hoy. Un vaso de agua a sorbos, un paseo a la luz, una respiración que te calma, una frase amable que te dices en vez de un reproche. Ahí, en lo pequeño y cotidiano, es donde vas a ir ganando esa estabilidad que buscas. Y no la vas a ganar de golpe: la vas a ir tejiendo, día a día.</p>
+
+    <p>Deja que insista en algo que ya sabes, porque es importante: este programa acompaña, pero no lo hace todo solo. Para lo que te pesa por dentro —la soledad, el trato que te das, el miedo—, mereces también el apoyo de un profesional que camine a tu lado; no es rendirse, es cuidarse bien. Y esas cosas del cuerpo que conviene mirar, como tu descanso, déjate acompañar por los médicos que te llevan. Buscar ayuda no es debilidad, Carlos: es de las cosas más valientes que puede hacer una persona. Y recuerda que nada de lo que hay aquí sustituye a tu tratamiento médico — todo suma a él, nunca lo reemplaza.</p>
+
+    <p>Y sobre todo, no te olvides de esto: <span class="resalte">no estás solo en este camino.</span> Yo estoy a este lado, y voy a seguir estando. Cuando tengas una duda, cuando algo no te salga, cuando necesites que ajustemos una pieza o simplemente que alguien te escuche — aquí me tienes. Para eso estoy, y lo hago de corazón.</p>
+
+    <p>Gracias por tu confianza, por tu sinceridad y por atreverte a empezar. Cuídate mucho, muévete con cariño, háblate bien. Y date, cada día, un poquito de la ternura que llevas tanto tiempo mereciendo. Porque te la mereces, Carlos. Aunque todavía no te lo creas del todo — te la mereces.</p>
+
+    <div class="firma">
+      <div class="nombre-firma">— Kiko</div>
+      <div class="lema">Tu bienestar, mi máxima prioridad.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <hr class="filete">
+  <div class="marca-footer">Kiko Martínez · Terapeuta Natural</div>
+  <div class="lema-footer">«Tu bienestar, mi máxima prioridad.»</div>
+  <p class="legal">Programa de carácter complementario. No sustituye el diagnóstico ni el tratamiento médico. Información confidencial — uso exclusivo de Carlos.</p>
+</footer>
+
+<script>
+function irA(id){
+  var m = document.getElementById('menu');
+  if(m){ m.classList.remove('open'); var bt = m.querySelector('.menu-indice'); if(bt){ bt.setAttribute('aria-expanded','false'); } }
+  var el = document.getElementById(id);
+  if(!el){ return; }
+  var offset = (m ? m.offsetHeight : 0) + 14;
+  var y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+  window.scrollTo({ top:y, behavior:'smooth' });
+}
+function toggleIndice(e){
+  if(e){ e.stopPropagation(); }
+  var m = document.getElementById('menu');
+  if(!m){ return; }
+  var open = m.classList.toggle('open');
+  var bt = m.querySelector('.menu-indice');
+  if(bt){ bt.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+}
+document.addEventListener('click', function(e){
+  var m = document.getElementById('menu');
+  if(m && m.classList.contains('open') && !m.contains(e.target)){
+    m.classList.remove('open');
+    var bt = m.querySelector('.menu-indice');
+    if(bt){ bt.setAttribute('aria-expanded','false'); }
+  }
+});
+
+/* ===== DIARIO EMOCIONAL ===== */
+var DIARIO_KEY = 'km_carlos_diario_v1';
+var animoActual = { siento:'' };
+
+function escapeHTML(str){
+  return String(str).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+function leerDiario(){
+  try{
+    var raw = localStorage.getItem(DIARIO_KEY);
+    if(!raw){ return { siento:[], hablarme:[], pude:[] }; }
+    var d = JSON.parse(raw);
+    return { siento:d.siento||[], hablarme:d.hablarme||[], pude:d.pude||[] };
+  }catch(e){ return { siento:[], hablarme:[], pude:[] }; }
+}
+function escribirDiario(d){
+  try{ localStorage.setItem(DIARIO_KEY, JSON.stringify(d)); return true; }
+  catch(e){ return false; }
+}
+function abrirTab(e, id){
+  if(e){ e.preventDefault(); }
+  var tabs = document.querySelectorAll('.diario-tab');
+  for(var i=0;i<tabs.length;i++){ tabs[i].classList.remove('activa'); }
+  if(e && e.currentTarget){ e.currentTarget.classList.add('activa'); }
+  var panels = document.querySelectorAll('.diario-panel');
+  for(var j=0;j<panels.length;j++){ panels[j].classList.remove('activo'); }
+  var p = document.getElementById(id);
+  if(p){ p.classList.add('activo'); }
+}
+function marcarAnimo(btn){
+  var cont = btn.parentNode;
+  var bs = cont.querySelectorAll('button');
+  for(var i=0;i<bs.length;i++){ bs[i].classList.remove('sel'); }
+  btn.classList.add('sel');
+  var grupo = cont.getAttribute('data-grupo');
+  animoActual[grupo] = btn.textContent;
+}
+function guardar(tipo){
+  var campo = document.getElementById('campo-'+tipo);
+  if(!campo){ return; }
+  var texto = (campo.value||'').trim();
+  if(!texto && !(tipo==='siento' && animoActual.siento)){ return; }
+  var d = leerDiario();
+  var fecha = new Date().toLocaleDateString('es-ES', { day:'numeric', month:'long', year:'numeric' });
+  var entrada = { fecha:fecha, texto:texto, ts:Date.now() };
+  if(tipo==='siento'){ entrada.animo = animoActual.siento || ''; }
+  d[tipo].unshift(entrada);
+  if(escribirDiario(d)){
+    campo.value = '';
+    if(tipo==='siento'){
+      animoActual.siento = '';
+      var sels = document.querySelectorAll('.animo[data-grupo="siento"] button.sel');
+      for(var i=0;i<sels.length;i++){ sels[i].classList.remove('sel'); }
+    }
+    var ok = document.getElementById('ok-'+tipo);
+    if(ok){ ok.classList.add('ver'); setTimeout(function(){ ok.classList.remove('ver'); }, 1800); }
+    render(tipo);
+  }
+}
+function borrarEntrada(tipo, ts){
+  var d = leerDiario();
+  d[tipo] = d[tipo].filter(function(en){ return en.ts !== ts; });
+  escribirDiario(d);
+  render(tipo);
+}
+function render(tipo){
+  var cont = document.getElementById('lista-'+tipo);
+  if(!cont){ return; }
+  var d = leerDiario();
+  var arr = d[tipo] || [];
+  if(arr.length === 0){
+    cont.innerHTML = '<p class="diario-vacio">Aún no has escrito nada aquí. Cuando quieras, este espacio es tuyo.</p>';
+    return;
+  }
+  var html = '<h4>Lo que has ido escribiendo</h4>';
+  for(var i=0;i<arr.length;i++){
+    var en = arr[i];
+    html += '<div class="entrada">';
+    html += '<button class="borrar-e" onclick="borrarEntrada(\'' + tipo + '\',' + en.ts + ')">borrar</button>';
+    html += '<div class="fecha-e">' + escapeHTML(en.fecha) + '</div>';
+    if(en.animo){ html += '<div class="animo-e">Ánimo: ' + escapeHTML(en.animo) + '</div>'; }
+    html += '<div class="texto-e">' + escapeHTML(en.texto) + '</div>';
+    html += '</div>';
+  }
+  cont.innerHTML = html;
+}
+document.addEventListener('DOMContentLoaded', function(){
+  render('siento'); render('hablarme'); render('pude');
+  initEval();
+});
+
+/* ===== CÓMO VOY (autoevaluación) ===== */
+var EVAL_KEY = 'km_carlos_evaluacion_v1';
+var EVAL_CAMPOS = ['descanso','calma','cuerpo','energia','trato','confianza'];
+
+function leerEval(){
+  try{ var raw = localStorage.getItem(EVAL_KEY); return raw ? (JSON.parse(raw)||[]) : []; }
+  catch(e){ return []; }
+}
+function escribirEval(arr){
+  try{ localStorage.setItem(EVAL_KEY, JSON.stringify(arr)); return true; }
+  catch(e){ return false; }
+}
+function pintarSlider(s){
+  var val = parseInt(s.value, 10);
+  var pct = ((val - 1) / 9) * 100;
+  s.style.background = 'linear-gradient(to right, var(--salvia) 0%, var(--salvia) ' + pct + '%, var(--linea) ' + pct + '%, var(--linea) 100%)';
+}
+function calcularMedia(){
+  var suma = 0;
+  for(var i=0;i<EVAL_CAMPOS.length;i++){
+    var s = document.getElementById('s-'+EVAL_CAMPOS[i]);
+    suma += parseInt(s.value, 10);
+  }
+  return suma / EVAL_CAMPOS.length;
+}
+function mensajePorMedia(m){
+  if(m < 4){ return 'Días difíciles, y aun así aquí estás, mirándote con honestidad. Eso ya es cuidarte. Ve paso a paso, y apóyate en tu modo mínimo.'; }
+  if(m < 7){ return 'Estás en camino, sumando poco a poco. No corras: lo que se construye despacio es lo que se queda. Vas bien.'; }
+  return 'Qué bonito leer esto. Se nota el trabajo que estás haciendo por ti. Disfrútalo y reconócetelo — te lo has ganado.';
+}
+function actualizarEval(){
+  for(var i=0;i<EVAL_CAMPOS.length;i++){
+    var c = EVAL_CAMPOS[i];
+    var s = document.getElementById('s-'+c);
+    var v = document.getElementById('v-'+c);
+    if(v){ v.textContent = s.value; }
+    pintarSlider(s);
+  }
+  var media = calcularMedia();
+  var pn = document.getElementById('promedio-num');
+  var pm = document.getElementById('promedio-msg');
+  if(pn){ pn.textContent = media.toFixed(1); }
+  if(pm){ pm.textContent = mensajePorMedia(media); }
+}
+function guardarEval(){
+  var registro = { fecha: new Date().toLocaleDateString('es-ES', { day:'numeric', month:'long', year:'numeric' }), ts: Date.now(), valores:{} };
+  for(var i=0;i<EVAL_CAMPOS.length;i++){
+    var c = EVAL_CAMPOS[i];
+    registro.valores[c] = parseInt(document.getElementById('s-'+c).value, 10);
+  }
+  registro.media = calcularMedia().toFixed(1);
+  var arr = leerEval();
+  arr.unshift(registro);
+  if(escribirEval(arr)){
+    var ok = document.getElementById('ok-eval');
+    if(ok){ ok.classList.add('ver'); setTimeout(function(){ ok.classList.remove('ver'); }, 1800); }
+    renderHistorial();
+  }
+}
+function borrarEval(ts){
+  var arr = leerEval().filter(function(r){ return r.ts !== ts; });
+  escribirEval(arr);
+  renderHistorial();
+}
+function renderHistorial(){
+  var cont = document.getElementById('eval-historial');
+  if(!cont){ return; }
+  var arr = leerEval();
+  if(arr.length === 0){ cont.innerHTML = ''; return; }
+  var html = '<h4>Tu evolución</h4>';
+  for(var i=0;i<arr.length;i++){
+    var r = arr[i];
+    html += '<div class="hist-fila">';
+    html += '<span class="hist-fecha">' + escapeHTML(r.fecha) + '</span>';
+    html += '<span class="hist-media">Media: ' + escapeHTML(String(r.media)) + '</span>';
+    html += '<button class="borrar-h" onclick="borrarEval(' + r.ts + ')">borrar</button>';
+    html += '</div>';
+  }
+  cont.innerHTML = html;
+}
+function initEval(){
+  for(var i=0;i<EVAL_CAMPOS.length;i++){
+    (function(c){
+      var s = document.getElementById('s-'+c);
+      if(s){ s.addEventListener('input', actualizarEval); }
+    })(EVAL_CAMPOS[i]);
+  }
+  actualizarEval();
+  renderHistorial();
+}
+</script>
+
+</body>
+</html>
